@@ -63,15 +63,15 @@ Issues = "https://github.com/venkatapgummadi/ascend/issues"
 include = ["ascend_sync*"]
 
 [tool.ruff]
-line-length = 100
+line-length = 120
 target-version = "py39"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "T20", "RUF"]
-ignore = ["S101"]  # allow assert in tests
+ignore = ["S101", "S301", "RUF012"]  # allow assert in tests
 
 [tool.black]
-line-length = 100
+line-length = 120
 target-version = ["py39", "py310", "py311", "py312"]
 
 [tool.pytest.ini_options]

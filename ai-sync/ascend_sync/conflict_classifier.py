@@ -216,7 +216,7 @@ class ConflictClassifier:
 
 def load_conflicts_from_jsonl(path: Path) -> list[Conflict]:
     out: list[Conflict] = []
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         for line in f:
             rec = json.loads(line)
             out.append(Conflict(
