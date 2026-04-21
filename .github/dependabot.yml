@@ -1,11 +1,94 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# Dependabot configuration for ASCEND
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
 version: 2
 updates:
-  - package-ecosystem: "" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  # Python dependencies in the AI sync module
+  - package-ecosystem: "pip"
+    directory: "/ai-sync"
     schedule:
       interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "python"
+    commit-message:
+      prefix: "deps(ai-sync)"
+      include: "scope"
+
+  # Python dependencies in the sample app
+  - package-ecosystem: "pip"
+    directory: "/examples/sample-python-app"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "python"
+      - "examples"
+    commit-message:
+      prefix: "deps(sample-python)"
+
+  # npm dependencies in the sample Node app
+  - package-ecosystem: "npm"
+    directory: "/examples/sample-node-app"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "examples"
+    commit-message:
+      prefix: "deps(sample-node)"
+
+  # GitHub Actions workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "deps(actions)"
+
+  # GitHub Actions in the sample Python app's own workflow
+  - package-ecosystem: "github-actions"
+    directory: "/examples/sample-python-app"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "examples"
+
+  # Docker images in sample apps
+  - package-ecosystem: "docker"
+    directory: "/examples/sample-python-app"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  - package-ecosystem: "docker"
+    directory: "/examples/sample-node-app"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  # Terraform modules
+  - package-ecosystem: "terraform"
+    directory: "/examples/terraform-baseline"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "terraform"
