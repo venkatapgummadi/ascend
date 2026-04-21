@@ -3,7 +3,7 @@
 # minimal runtime dependencies, no shell by default in the final stage.
 
 # ---------- Stage 1: builder ----------
-FROM python:3.12.7-slim-bookworm@sha256:af4e85f1cac90dd3771e47292ea7c8a9830abfabbe4faa5c53f158854c2e819d AS builder
+FROM python:3.14.0-slim-bookworm@sha256:d13fa0424035d290decef3d575cea23d1b7d5952cdf429df8f5542c71e961576 AS builder
 
 WORKDIR /build
 
@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir --upgrade pip \
  && pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 # ---------- Stage 2: runtime ----------
-FROM python:3.12.7-slim-bookworm@sha256:af4e85f1cac90dd3771e47292ea7c8a9830abfabbe4faa5c53f158854c2e819d AS runtime
+FROM python:3.14.0-slim-bookworm@sha256:d13fa0424035d290decef3d575cea23d1b7d5952cdf429df8f5542c71e961576 AS runtime
 
 # Security: non-root user, no shell, no package manager in final image.
 RUN groupadd --system --gid 10001 app \
