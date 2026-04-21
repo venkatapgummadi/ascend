@@ -1,0 +1,32 @@
+{
+  "name": "sample-node-app",
+  "version": "0.1.0",
+  "description": "Sample Express API demonstrating ASCEND integration",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test test/",
+    "lint": "eslint src/ test/",
+    "audit": "npm audit --audit-level=high"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "better-sqlite3": "^11.3.0",
+    "helmet": "^8.0.0",
+    "express-rate-limit": "^7.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.13.0",
+    "@eslint/js": "^9.13.0",
+    "supertest": "^7.0.0"
+  },
+  "author": "Venkata Pavan Kumar Gummadi",
+  "license": "MIT"
+}

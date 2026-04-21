@@ -1,0 +1,132 @@
+# ASCEND pipeline for sample-python-app.
+# This is a minimal but complete adaptation of platforms/github-actions/ascend-full.yml
+# tuned for a Python Flask application.
+
+name: ASCEND — sample-python-app
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+
+  # ---------------------------------------------------------------------------
+  # LAYER 1 — Source Analysis
+  # ---------------------------------------------------------------------------
+
+  sast-semgrep:
+    name: "L1 / SAST — Semgrep"
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - run: semgrep ci --config=p/ci --config=p/owasp-top-ten --config=p/python
+
+  sast-bandit:
+    name: "L1 / SAST — Bandit (Python)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          pip install bandit
+          bandit -r app/ -f sarif -o bandit.sarif || true
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with: { sarif_file: bandit.sarif }
+
+  sca-pip-audit:
+    name: "L1 / SCA — pip-audit"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          pip install pip-audit
+          pip-audit -r requirements.txt --strict
+
+  secret-scan:
+    name: "L1 / Secrets — TruffleHog"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: trufflesecurity/trufflehog@main
+        with:
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified --fail
+
+  tests:
+    name: "L1 / Tests"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: |
+          pip install -r requirements-dev.txt
+          pytest tests/ --cov=app --cov-report=term-missing
+
+  quality-gate-1:
+    name: "L1 / Quality Gate 1"
+    needs: [sast-semgrep, sast-bandit, sca-pip-audit, secret-scan, tests]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "::notice::Quality Gate 1 passed."
+
+  # ---------------------------------------------------------------------------
+  # LAYER 2 — Build & Integration
+  # ---------------------------------------------------------------------------
+
+  container-scan:
+    name: "L2 / Container — Trivy"
+    needs: quality-gate-1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t sample-python-app:${{ github.sha }} .
+      - uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: sample-python-app:${{ github.sha }}
+          format: sarif
+          output: trivy.sarif
+          severity: "CRITICAL,HIGH"
+          exit-code: "1"
+          ignore-unfixed: true
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with: { sarif_file: trivy.sarif }
+
+  iac-scan:
+    name: "L2 / IaC — Checkov"
+    needs: quality-gate-1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          framework: terraform,dockerfile,github_actions
+          soft_fail: false
+
+  quality-gate-2:
+    name: "L2 / Quality Gate 2"
+    needs: [container-scan, iac-scan]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "::notice::Quality Gate 2 passed."

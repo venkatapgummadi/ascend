@@ -1,0 +1,9 @@
+{
+  "file_path": "app/services/report.py",
+  "ours": "import os\nimport sys\nimport logging\n\nfrom datetime import datetime\n\ndef generate_report():\n    return {'generated_at': datetime.utcnow().isoformat()}\n",
+  "theirs": "import logging\nimport os\nimport sys\n\nfrom datetime import datetime\n\ndef generate_report():\n    return {'generated_at': datetime.utcnow().isoformat()}\n",
+  "base": "import os\nimport sys\n\nfrom datetime import datetime\n\ndef generate_report():\n    return {'generated_at': datetime.utcnow().isoformat()}\n",
+  "expected_type": "syntactic",
+  "expected_confidence_floor": 0.7,
+  "description": "Both branches added logging import but in different relative positions. Function body identical."
+}

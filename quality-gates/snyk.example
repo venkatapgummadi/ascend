@@ -1,0 +1,25 @@
+# ASCEND Snyk configuration (.snyk example)
+# Controls Snyk vulnerability management behavior.
+# Copy to your repo root as .snyk and customize.
+
+version: v1.25.0
+
+# Ignore rules: temporarily accept specific vulnerabilities with expiration
+# All ignores MUST have a documented reason and expiration.
+ignore:
+#  SNYK-JS-AXIOS-12345:
+#    - '*':
+#        reason: No fix available; library is only used internally with trusted input
+#        expires: 2026-09-01T00:00:00.000Z
+
+# Patch rules (Snyk-provided patches for upstream vulnerabilities)
+patch: {}
+
+# Exclude paths from scanning
+exclude:
+  global:
+    - tests/**
+    - docs/**
+
+# Fail thresholds — align with ASCEND_HIGH_THRESHOLD and ASCEND_CRITICAL_THRESHOLD
+severity-threshold: high

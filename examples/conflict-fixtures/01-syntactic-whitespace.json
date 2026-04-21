@@ -1,0 +1,9 @@
+{
+  "file_path": "app/utils.py",
+  "ours": "def compute_total(items):\n    return sum(item.price for item in items)\n",
+  "theirs": "def compute_total(items):\n\treturn sum(item.price for item in items)\n",
+  "base": "def compute_total(items):\n    return sum(item.price for item in items)\n",
+  "expected_type": "syntactic",
+  "expected_confidence_floor": 0.9,
+  "description": "Pure whitespace difference (tab vs 4 spaces). Classifier should recognize this as syntactic with high confidence."
+}

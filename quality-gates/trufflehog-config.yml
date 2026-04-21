@@ -1,0 +1,35 @@
+# ASCEND TruffleHog configuration
+# Place as .trufflehog.yml in your repo root.
+
+detectors:
+  # Enable all default detectors (AWS, Slack, GitHub, etc.)
+  include:
+    - all
+
+# Require verification — only build-fail on confirmed valid secrets,
+# not just pattern matches. This dramatically reduces false positives.
+only_verified: true
+
+# Scan the full history on initial deployment.
+# Switch to incremental (commit range) for regular CI runs.
+scan:
+  mode: incremental     # incremental | full-history
+  concurrency: 8
+
+# Paths to exclude from scanning
+exclude:
+  - "**/node_modules/**"
+  - "**/.git/**"
+  - "**/vendor/**"
+  - "**/*.lock"
+  - "**/test/fixtures/**"
+  - "**/tests/fixtures/**"
+
+# Custom detectors for organization-specific formats
+custom_detectors:
+  - name: internal-api-key
+    description: Internal API key pattern used by services
+    regex:
+      api_key: "INTERNAL_AK_[a-zA-Z0-9]{32}"
+    keywords:
+      - INTERNAL_AK_

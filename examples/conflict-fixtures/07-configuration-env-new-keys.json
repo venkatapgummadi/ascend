@@ -1,0 +1,9 @@
+{
+  "file_path": ".env.example",
+  "ours": "DATABASE_URL=postgresql://localhost:5432/app\nJWT_SIGNING_SECRET=your-secret-here\nLOG_LEVEL=INFO\nSENTRY_DSN=https://example.ingest.sentry.io/12345\n",
+  "theirs": "DATABASE_URL=postgresql://localhost:5432/app\nJWT_SIGNING_SECRET=your-secret-here\nJWT_ISSUER=ascend-sample\nJWT_AUDIENCE=ascend-users\nLOG_LEVEL=INFO\n",
+  "base": "DATABASE_URL=postgresql://localhost:5432/app\nJWT_SIGNING_SECRET=your-secret-here\nLOG_LEVEL=INFO\n",
+  "expected_type": "configuration",
+  "expected_confidence_floor": 0.8,
+  "description": "OURS added SENTRY_DSN for observability. THEIRS added JWT_ISSUER and JWT_AUDIENCE for the hardened auth middleware. Resolution should preserve all new keys from both branches."
+}

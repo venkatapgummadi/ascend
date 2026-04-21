@@ -1,0 +1,15 @@
+# Checkov configuration for terraform-baseline example
+# Run: checkov -d . --config-file .checkov.yml
+
+framework:
+  - terraform
+
+soft-fail: false
+compact: true
+
+# Baseline file captures pre-existing findings; new findings block the build.
+# Generate/update via: checkov -d . --create-baseline
+baseline: .checkov.baseline
+
+# Ignore specific checks with documented rationale.
+skip-check: []

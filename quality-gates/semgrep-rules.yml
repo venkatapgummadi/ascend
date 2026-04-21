@@ -1,0 +1,79 @@
+# ASCEND Semgrep ruleset configuration
+# Combines community rulesets with custom rules for DevSecOps concerns.
+
+rules:
+  # -----------------------------------------------------------------------
+  # Include community rulesets via semgrep.dev registry
+  # -----------------------------------------------------------------------
+  - id: ascend-hardcoded-secret
+    pattern-either:
+      - pattern: $VAR = "..."
+    patterns:
+      - pattern-regex: "(?i)(password|api[_-]?key|secret|token)\\s*=\\s*['\"][^'\"]{8,}['\"]"
+    message: "Hardcoded secret detected. Move to a secrets manager."
+    languages: [python, javascript, java, go]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-798"
+      owasp: "A07:2021 - Identification and Authentication Failures"
+
+  - id: ascend-sql-string-concatenation
+    pattern-either:
+      - pattern: |
+          $QUERY = "..." + $USER_INPUT
+      - pattern: |
+          $DB.execute("..." + $USER_INPUT)
+    message: "Potential SQL injection: concatenating user input into SQL string. Use parameterized queries."
+    languages: [python, javascript, java]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-89"
+      owasp: "A03:2021 - Injection"
+
+  - id: ascend-eval-usage
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+    message: "Use of eval/exec enables arbitrary code execution. Avoid unless strictly necessary and input is trusted."
+    languages: [python, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-95"
+
+  - id: ascend-weak-crypto
+    pattern-either:
+      - pattern: hashlib.md5(...)
+      - pattern: hashlib.sha1(...)
+      - pattern: crypto.createHash('md5')
+      - pattern: crypto.createHash('sha1')
+    message: "Weak hash algorithm (MD5/SHA1). Use SHA-256 or stronger for security contexts."
+    languages: [python, javascript]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-327"
+
+  - id: ascend-missing-tls-verify
+    pattern-either:
+      - pattern: requests.$METHOD(..., verify=False, ...)
+      - pattern: urllib3.disable_warnings(...)
+    message: "TLS verification disabled. Enable certificate verification in production code."
+    languages: [python]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-295"
+
+  - id: ascend-debug-true-in-prod
+    pattern-either:
+      - pattern: DEBUG = True
+      - pattern: app.run(..., debug=True, ...)
+    message: "Debug mode enabled. Must be False in production."
+    languages: [python]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-489"

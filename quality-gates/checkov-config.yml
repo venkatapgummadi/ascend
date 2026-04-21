@@ -1,0 +1,44 @@
+# ASCEND Checkov configuration
+# Place as .checkov.yml in repo root or pass with --config-file.
+
+framework:
+  - terraform
+  - cloudformation
+  - kubernetes
+  - dockerfile
+  - helm
+  - github_actions
+
+# Block on any failing CRITICAL or HIGH severity
+soft-fail: false
+hard-fail-on:
+  - CRITICAL
+  - HIGH
+
+# Compliance frameworks to enforce
+compact: true
+quiet: false
+
+download-external-modules: true
+
+# Skip checks that are noisy or organization-specific
+skip-check:
+  # Example: allow private ECR repos
+  - CKV_AWS_163
+  # Example: we use organization-wide VPC flow logs
+  - CKV_AWS_11
+
+# Include specific checks (overrides skip)
+check:
+  - CKV_AWS_*
+  - CKV_AZURE_*
+  - CKV_GCP_*
+  - CKV_K8S_*
+
+# Output settings
+output: sarif
+output-file-path: reports/checkov.sarif
+
+# Baseline to compare against (allows grandfathering existing findings)
+# Create via: checkov -d . --create-baseline
+baseline: .checkov.baseline

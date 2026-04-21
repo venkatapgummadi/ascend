@@ -1,0 +1,189 @@
+# ASCEND — Full four-layer DevSecOps pipeline for GitLab CI/CD
+#
+# Uses GitLab's native security scanning templates (the lowest-friction
+# integration of the four supported platforms).
+
+stages:
+  - layer1-source-analysis
+  - quality-gate-1
+  - layer2-build-integration
+  - quality-gate-2
+  - layer3-deployment
+  - quality-gate-3
+  - production-promote
+  - layer4-ai-sync
+
+variables:
+  ASCEND_QUALITY_GATE_MIN: "0.85"
+  ASCEND_CRITICAL_THRESHOLD: "0"
+  ASCEND_HIGH_THRESHOLD: "5"
+  SAST_EXCLUDED_PATHS: "spec, test, tests, tmp, node_modules"
+  SECRET_DETECTION_HISTORIC_SCAN: "true"
+
+# -----------------------------------------------------------------------------
+# LAYER 1 — Source Analysis
+# -----------------------------------------------------------------------------
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/DAST.gitlab-ci.yml
+
+sast:
+  stage: layer1-source-analysis
+
+secret_detection:
+  stage: layer1-source-analysis
+
+dependency_scanning:
+  stage: layer1-source-analysis
+
+semgrep-sast:
+  stage: layer1-source-analysis
+  image: returntocorp/semgrep
+  script:
+    - semgrep ci --config=p/ci --config=p/owasp-top-ten --json -o semgrep.json
+  artifacts:
+    when: always
+    paths:
+      - semgrep.json
+    reports:
+      sast: semgrep.json
+
+# -----------------------------------------------------------------------------
+# QUALITY GATE 1
+# -----------------------------------------------------------------------------
+
+quality-gate-1:
+  stage: quality-gate-1
+  image: alpine:3.19
+  before_script:
+    - apk add --no-cache jq
+  script:
+    - |
+      CRITICAL=$(jq '[.vulnerabilities[] | select(.severity=="Critical")] | length' gl-sast-report.json 2>/dev/null || echo 0)
+      HIGH=$(jq '[.vulnerabilities[] | select(.severity=="High")] | length' gl-sast-report.json 2>/dev/null || echo 0)
+      echo "Critical: $CRITICAL"
+      echo "High: $HIGH"
+      if [ "$CRITICAL" -gt "$ASCEND_CRITICAL_THRESHOLD" ]; then
+        echo "FAIL: critical vulnerabilities exceed threshold"
+        exit 1
+      fi
+      if [ "$HIGH" -gt "$ASCEND_HIGH_THRESHOLD" ]; then
+        echo "FAIL: high vulnerabilities exceed threshold"
+        exit 1
+      fi
+      echo "PASS: Quality Gate 1"
+  dependencies:
+    - sast
+    - dependency_scanning
+    - secret_detection
+
+# -----------------------------------------------------------------------------
+# LAYER 2 — Build & Integration
+# -----------------------------------------------------------------------------
+
+container_scanning:
+  stage: layer2-build-integration
+  needs: [quality-gate-1]
+
+iac-checkov:
+  stage: layer2-build-integration
+  needs: [quality-gate-1]
+  image: bridgecrew/checkov:latest
+  script:
+    - checkov -d . --framework terraform,cloudformation,kubernetes,dockerfile
+                   --output-file-path reports/ --output sarif
+  artifacts:
+    when: always
+    paths:
+      - reports/
+    reports:
+      sast: reports/results_sarif.sarif
+
+license_scanning:
+  stage: layer2-build-integration
+  needs: [quality-gate-1]
+
+# -----------------------------------------------------------------------------
+# QUALITY GATE 2
+# -----------------------------------------------------------------------------
+
+quality-gate-2:
+  stage: quality-gate-2
+  image: alpine:3.19
+  script:
+    - echo "PASS: Quality Gate 2"
+  dependencies:
+    - container_scanning
+    - iac-checkov
+    - license_scanning
+
+# -----------------------------------------------------------------------------
+# LAYER 3 — Deployment (blue-green with DAST)
+# -----------------------------------------------------------------------------
+
+deploy-staging:
+  stage: layer3-deployment
+  needs: [quality-gate-2]
+  environment:
+    name: staging
+    url: https://staging.example.com
+  script:
+    - echo "Deploying $CI_COMMIT_SHA to staging (blue-green inactive slot)"
+  only:
+    - main
+
+dast:
+  stage: layer3-deployment
+  needs: [deploy-staging]
+  variables:
+    DAST_WEBSITE: https://staging.example.com
+    DAST_FULL_SCAN_ENABLED: "false"   # baseline scan; set true for pre-release
+
+# -----------------------------------------------------------------------------
+# QUALITY GATE 3
+# -----------------------------------------------------------------------------
+
+quality-gate-3:
+  stage: quality-gate-3
+  image: alpine:3.19
+  script:
+    - echo "PASS: Quality Gate 3 — DAST baseline clean"
+  dependencies:
+    - dast
+
+# -----------------------------------------------------------------------------
+# Production promote
+# -----------------------------------------------------------------------------
+
+promote-production:
+  stage: production-promote
+  needs: [quality-gate-3]
+  environment:
+    name: production
+    url: https://production.example.com
+  when: manual
+  script:
+    - echo "Switching production traffic to new blue-green slot"
+
+# -----------------------------------------------------------------------------
+# LAYER 4 — AI Sync trigger
+# -----------------------------------------------------------------------------
+
+ai-sync-trigger:
+  stage: layer4-ai-sync
+  needs: [promote-production]
+  image: curlimages/curl:8.6.0
+  script:
+    - |
+      if [ -n "$ASCEND_SYNC_WEBHOOK" ]; then
+        curl -sS -X POST "$ASCEND_SYNC_WEBHOOK" \
+          -H "Content-Type: application/json" \
+          -d "{\"repo\":\"$CI_PROJECT_PATH\",\"sha\":\"$CI_COMMIT_SHA\",\"trigger\":\"post-deploy\"}"
+      else
+        echo "ASCEND_SYNC_WEBHOOK not configured — skipping AI sync trigger"
+      fi

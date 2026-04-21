@@ -1,0 +1,54 @@
+{
+  "name": "ASCEND Enterprise Quality Gate",
+  "description": "Default quality gate enforced by the ASCEND framework. Apply via SonarQube UI or via the SonarQube REST API.",
+  "conditions": [
+    {
+      "metric": "new_security_rating",
+      "operator": "GREATER_THAN",
+      "error": "1",
+      "description": "New code must maintain Security Rating A"
+    },
+    {
+      "metric": "new_reliability_rating",
+      "operator": "GREATER_THAN",
+      "error": "1",
+      "description": "New code must maintain Reliability Rating A"
+    },
+    {
+      "metric": "new_maintainability_rating",
+      "operator": "GREATER_THAN",
+      "error": "1",
+      "description": "New code must maintain Maintainability Rating A"
+    },
+    {
+      "metric": "new_coverage",
+      "operator": "LESS_THAN",
+      "error": "80",
+      "description": "New code coverage must be at least 80%"
+    },
+    {
+      "metric": "new_duplicated_lines_density",
+      "operator": "GREATER_THAN",
+      "error": "3",
+      "description": "Duplicated new lines must be below 3%"
+    },
+    {
+      "metric": "new_security_hotspots_reviewed",
+      "operator": "LESS_THAN",
+      "error": "100",
+      "description": "All new security hotspots must be reviewed"
+    },
+    {
+      "metric": "new_vulnerabilities",
+      "operator": "GREATER_THAN",
+      "error": "0",
+      "description": "Zero new vulnerabilities"
+    },
+    {
+      "metric": "new_critical_violations",
+      "operator": "GREATER_THAN",
+      "error": "0",
+      "description": "Zero critical rule violations on new code"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+# ASCEND pipeline for sample-node-app.
+# Uses GitLab native security scanning templates.
+
+stages:
+  - build
+  - test
+  - layer1-source-analysis
+  - quality-gate-1
+  - layer2-build-integration
+  - quality-gate-2
+  - layer3-deploy
+  - quality-gate-3
+
+variables:
+  NODE_VERSION: "20"
+  DOCKER_IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/DAST.gitlab-ci.yml
+
+# ---------------------------------------------------------------------------
+# Build + Test (prerequisite for all scanning)
+# ---------------------------------------------------------------------------
+
+install:
+  stage: build
+  image: node:${NODE_VERSION}-alpine
+  cache:
+    key: "${CI_COMMIT_REF_SLUG}-node"
+    paths: [node_modules/]
+  script:
+    - npm ci
+  artifacts:
+    paths: [node_modules/]
+    expire_in: 1 hour
+
+test:
+  stage: test
+  image: node:${NODE_VERSION}-alpine
+  dependencies: [install]
+  script:
+    - npm test
+    - npm run lint
+
+# ---------------------------------------------------------------------------
+# LAYER 1 — Source Analysis
+# (GitLab native templates run automatically in this stage)
+# ---------------------------------------------------------------------------
+
+sast:
+  stage: layer1-source-analysis
+
+secret_detection:
+  stage: layer1-source-analysis
+
+dependency_scanning:
+  stage: layer1-source-analysis
+
+semgrep-extra:
+  stage: layer1-source-analysis
+  image: returntocorp/semgrep
+  script:
+    - semgrep ci --config=p/ci --config=p/owasp-top-ten --config=p/javascript
+
+# ---------------------------------------------------------------------------
+# QG1
+# ---------------------------------------------------------------------------
+
+quality-gate-1:
+  stage: quality-gate-1
+  image: alpine:3.20
+  before_script: [apk add --no-cache jq]
+  script:
+    - |
+      CRITICAL=$(jq '[.vulnerabilities[] | select(.severity=="Critical")] | length' gl-sast-report.json 2>/dev/null || echo 0)
+      echo "Critical findings: $CRITICAL"
+      [ "$CRITICAL" -eq 0 ] || { echo "QG1 FAIL: critical findings exceed threshold"; exit 1; }
+      echo "QG1 PASS"
+  dependencies: [sast, secret_detection, dependency_scanning]
+
+# ---------------------------------------------------------------------------
+# LAYER 2 — Build & Container Scan
+# ---------------------------------------------------------------------------
+
+docker-build:
+  stage: layer2-build-integration
+  needs: [quality-gate-1]
+  image: docker:27
+  services: [docker:27-dind]
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - docker build -t "$DOCKER_IMAGE" .
+    - docker push "$DOCKER_IMAGE"
+
+container_scanning:
+  stage: layer2-build-integration
+  needs: [docker-build]
+  variables:
+    CS_IMAGE: "$DOCKER_IMAGE"
+
+iac-checkov:
+  stage: layer2-build-integration
+  needs: [quality-gate-1]
+  image: bridgecrew/checkov
+  script:
+    - checkov -d . --framework dockerfile,kubernetes --soft-fail-on-error
+
+# ---------------------------------------------------------------------------
+# QG2
+# ---------------------------------------------------------------------------
+
+quality-gate-2:
+  stage: quality-gate-2
+  image: alpine:3.20
+  script:
+    - echo "QG2 PASS"
+  dependencies: [container_scanning, iac-checkov]
+
+# ---------------------------------------------------------------------------
+# LAYER 3 — Deploy + DAST
+# ---------------------------------------------------------------------------
+
+deploy-staging:
+  stage: layer3-deploy
+  needs: [quality-gate-2]
+  environment:
+    name: staging
+    url: https://staging-sample-node.example.com
+  script:
+    - echo "Deploying $DOCKER_IMAGE to staging"
+  only: [main]
+
+dast:
+  stage: layer3-deploy
+  needs: [deploy-staging]
+  variables:
+    DAST_WEBSITE: https://staging-sample-node.example.com
+    DAST_FULL_SCAN_ENABLED: "false"
+
+# ---------------------------------------------------------------------------
+# QG3
+# ---------------------------------------------------------------------------
+
+quality-gate-3:
+  stage: quality-gate-3
+  image: alpine:3.20
+  script:
+    - echo "QG3 PASS"
+  dependencies: [dast]

@@ -1,0 +1,9 @@
+{
+  "file_path": "app/orders.py",
+  "ours": "class OrderService:\n    def create_order(self, user, items):\n        order = Order(user=user, items=items)\n        order.save()\n        self.send_confirmation(order)\n        return order\n\n    def cancel_order(self, order_id):\n        order = Order.get(order_id)\n        order.status = 'cancelled'\n        order.save()\n        return order\n\n    def send_confirmation(self, order):\n        email_service.send(order.user.email, 'order-confirmation', {'order': order})\n",
+  "theirs": "# notification responsibilities moved to a separate class\n\nclass OrderNotifier:\n    def notify_order_created(self, order): pass\n    def notify_order_cancelled(self, order): pass\n\nclass OrderService:\n    def __init__(self, notifier):\n        self.notifier = notifier\n\n    def create_order(self, user, items):\n        order = Order(user=user, items=items)\n        order.save()\n        self.notifier.notify_order_created(order)\n        return order\n\n    def cancel_order(self, order_id):\n        order = Order.get(order_id)\n        order.status = 'cancelled'\n        order.save()\n        self.notifier.notify_order_cancelled(order)\n        return order\n",
+  "base": "class OrderService:\n    def create_order(self, user, items):\n        order = Order(user=user, items=items)\n        order.save()\n        email_service.send(order.user.email, 'order-confirmation', {'order': order})\n        return order\n",
+  "expected_type": "structural",
+  "expected_confidence_floor": 0.4,
+  "description": "THEIRS refactored: notifications extracted into OrderNotifier class. OURS extended OrderService inline. Heuristic classifier may classify as semantic due to overlapping OrderService definitions. A trained ML classifier should outperform the heuristic. That is the motivation for training on your organization's own conflict history."
+}

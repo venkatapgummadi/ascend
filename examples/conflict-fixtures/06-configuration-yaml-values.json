@@ -1,0 +1,9 @@
+{
+  "file_path": "config/production.yml",
+  "ours": "database:\n  host: db.prod.internal\n  port: 5432\n  pool_size: 20\n  timeout_seconds: 30\n\nrate_limit:\n  requests_per_minute: 600\n  burst: 50\n\nfeature_flags:\n  new_checkout_flow: true\n",
+  "theirs": "database:\n  host: db.prod.internal\n  port: 5432\n  pool_size: 40\n  timeout_seconds: 60\n\nrate_limit:\n  requests_per_minute: 600\n  burst: 50\n\nfeature_flags:\n  new_checkout_flow: true\n  experimental_cache: true\n",
+  "base": "database:\n  host: db.prod.internal\n  port: 5432\n  pool_size: 20\n  timeout_seconds: 30\n\nrate_limit:\n  requests_per_minute: 600\n  burst: 50\n\nfeature_flags:\n  new_checkout_flow: true\n",
+  "expected_type": "configuration",
+  "expected_confidence_floor": 0.8,
+  "description": "OURS kept pool_size=20. THEIRS increased to pool_size=40 and timeout=60 (capacity increase) and added a new feature flag. Conflict is resolvable by preserving the newer values and the new flag."
+}

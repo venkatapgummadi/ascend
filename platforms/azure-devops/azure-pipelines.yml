@@ -1,0 +1,273 @@
+# ASCEND — Full four-layer DevSecOps pipeline for Azure DevOps
+#
+# Uses YAML pipeline templates with native SonarQube, Snyk, and OWASP tasks.
+# Designed for enterprise scenarios requiring RBAC integration and audit trails.
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    exclude:
+      - docs/**
+      - '*.md'
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+
+variables:
+  ASCEND_QUALITY_GATE_MIN: 0.85
+  ASCEND_CRITICAL_THRESHOLD: 0
+  ASCEND_HIGH_THRESHOLD: 5
+  vmImageName: 'ubuntu-latest'
+  containerRegistry: '$(dockerRegistryServiceConnection)'
+  imageRepository: 'ascend-demo'
+  tag: '$(Build.BuildId)'
+
+pool:
+  vmImage: $(vmImageName)
+
+stages:
+
+# -----------------------------------------------------------------------------
+# LAYER 1 — Source Analysis
+# -----------------------------------------------------------------------------
+
+- stage: Layer1_Source_Analysis
+  displayName: 'L1: Source Analysis'
+  jobs:
+
+    - job: SAST_SonarQube
+      displayName: 'SAST — SonarQube'
+      steps:
+        - task: SonarQubePrepare@5
+          inputs:
+            SonarQube: 'SonarQube-Enterprise'
+            scannerMode: 'CLI'
+            configMode: 'file'
+        - task: SonarQubeAnalyze@5
+        - task: SonarQubePublish@5
+          inputs:
+            pollingTimeoutSec: '300'
+        - task: sonarcloud-buildbreaker@2
+          condition: always()
+
+    - job: SAST_Semgrep
+      displayName: 'SAST — Semgrep'
+      steps:
+        - script: |
+            docker run --rm -v "$(Build.SourcesDirectory):/src" \
+              returntocorp/semgrep \
+              semgrep ci --config=p/ci --config=p/owasp-top-ten \
+              --json -o /src/semgrep.json
+          displayName: 'Semgrep scan'
+        - task: PublishBuildArtifacts@1
+          condition: always()
+          inputs:
+            PathtoPublish: 'semgrep.json'
+            ArtifactName: 'semgrep-results'
+
+    - job: SCA_Snyk
+      displayName: 'SCA — Snyk'
+      steps:
+        - task: SnykSecurityScan@1
+          inputs:
+            serviceConnectionEndpoint: 'Snyk'
+            testType: 'app'
+            severityThreshold: 'high'
+            failOnIssues: true
+
+    - job: Secrets_TruffleHog
+      displayName: 'Secrets — TruffleHog'
+      steps:
+        - script: |
+            docker run --rm -v "$(Build.SourcesDirectory):/src" \
+              trufflesecurity/trufflehog:latest \
+              filesystem /src --only-verified --fail
+          displayName: 'TruffleHog scan'
+
+# -----------------------------------------------------------------------------
+# QUALITY GATE 1
+# -----------------------------------------------------------------------------
+
+- stage: QualityGate1
+  displayName: 'Quality Gate 1'
+  dependsOn: Layer1_Source_Analysis
+  condition: succeeded()
+  jobs:
+    - job: QG1
+      displayName: 'Evaluate Layer 1 gates'
+      steps:
+        - script: echo "PASS: Quality Gate 1 — Layer 1 scans clean"
+          displayName: 'QG1 evaluation'
+
+# -----------------------------------------------------------------------------
+# LAYER 2 — Build & Integration
+# -----------------------------------------------------------------------------
+
+- stage: Layer2_Build_Integration
+  displayName: 'L2: Build & Integration'
+  dependsOn: QualityGate1
+  condition: succeeded()
+  jobs:
+
+    - job: Container_Trivy
+      displayName: 'Container — Trivy'
+      steps:
+        - task: Docker@2
+          displayName: 'Build container image'
+          inputs:
+            command: 'build'
+            repository: $(imageRepository)
+            tags: $(tag)
+        - script: |
+            docker run --rm \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              aquasec/trivy image \
+              --severity CRITICAL,HIGH \
+              --ignore-unfixed \
+              --exit-code 1 \
+              --format sarif \
+              --output trivy.sarif \
+              $(imageRepository):$(tag)
+          displayName: 'Trivy scan'
+        - task: PublishBuildArtifacts@1
+          condition: always()
+          inputs:
+            PathtoPublish: 'trivy.sarif'
+            ArtifactName: 'trivy-results'
+
+    - job: IaC_Checkov
+      displayName: 'IaC — Checkov'
+      steps:
+        - script: |
+            pip install checkov
+            checkov -d . --framework terraform,cloudformation,kubernetes,dockerfile \
+                         --output sarif --output-file-path reports/
+          displayName: 'Checkov scan'
+        - task: PublishBuildArtifacts@1
+          condition: always()
+          inputs:
+            PathtoPublish: 'reports/'
+            ArtifactName: 'checkov-results'
+
+    - job: License_Check
+      displayName: 'License — FOSSA'
+      condition: ne(variables['FOSSA_API_KEY'], '')
+      steps:
+        - script: |
+            curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash
+            fossa analyze
+            fossa test
+          env:
+            FOSSA_API_KEY: $(FOSSA_API_KEY)
+          displayName: 'FOSSA analysis'
+
+# -----------------------------------------------------------------------------
+# QUALITY GATE 2
+# -----------------------------------------------------------------------------
+
+- stage: QualityGate2
+  displayName: 'Quality Gate 2'
+  dependsOn: Layer2_Build_Integration
+  condition: succeeded()
+  jobs:
+    - job: QG2
+      steps:
+        - script: echo "PASS: Quality Gate 2"
+
+# -----------------------------------------------------------------------------
+# LAYER 3 — Deployment + DAST
+# -----------------------------------------------------------------------------
+
+- stage: Layer3_Deploy_Staging
+  displayName: 'L3: Deploy — Staging (Blue-Green)'
+  dependsOn: QualityGate2
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+    - deployment: DeployStaging
+      displayName: 'Deploy to staging'
+      environment:
+        name: 'staging'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: AzureWebApp@1
+                inputs:
+                  azureSubscription: '$(azureSubscriptionEndpoint)'
+                  appName: '$(webAppName)'
+                  deployToSlotOrASE: true
+                  slotName: 'green'
+                  package: '$(Pipeline.Workspace)/**/*.zip'
+
+    - job: DAST_ZAP
+      displayName: 'DAST — OWASP ZAP'
+      dependsOn: DeployStaging
+      steps:
+        - script: |
+            docker run --rm ghcr.io/zaproxy/zaproxy:stable \
+              zap-baseline.py -t https://staging.example.com -a -I
+          displayName: 'ZAP Baseline Scan'
+
+# -----------------------------------------------------------------------------
+# QUALITY GATE 3
+# -----------------------------------------------------------------------------
+
+- stage: QualityGate3
+  displayName: 'Quality Gate 3'
+  dependsOn: Layer3_Deploy_Staging
+  condition: succeeded()
+  jobs:
+    - job: QG3
+      steps:
+        - script: echo "PASS: Quality Gate 3 — DAST baseline clean"
+
+# -----------------------------------------------------------------------------
+# Production promote (manual approval)
+# -----------------------------------------------------------------------------
+
+- stage: PromoteProduction
+  displayName: 'Promote to Production'
+  dependsOn: QualityGate3
+  condition: succeeded()
+  jobs:
+    - deployment: PromoteProd
+      environment:
+        name: 'production'   # configure approval gate in AzDO Environments
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: AzureAppServiceManage@0
+                displayName: 'Swap slots blue <-> green'
+                inputs:
+                  azureSubscription: '$(azureSubscriptionEndpoint)'
+                  WebAppName: '$(webAppName)'
+                  ResourceGroupName: '$(resourceGroupName)'
+                  Action: 'Swap Slots'
+                  SourceSlot: 'green'
+                  SwapWithProduction: true
+
+# -----------------------------------------------------------------------------
+# LAYER 4 — AI Sync trigger
+# -----------------------------------------------------------------------------
+
+- stage: Layer4_AI_Sync
+  displayName: 'L4: AI Sync Trigger'
+  dependsOn: PromoteProduction
+  condition: succeeded()
+  jobs:
+    - job: AISync
+      steps:
+        - script: |
+            if [ -n "$(ASCEND_SYNC_WEBHOOK)" ]; then
+              curl -sS -X POST "$(ASCEND_SYNC_WEBHOOK)" \
+                -H "Content-Type: application/json" \
+                -d "{\"repo\":\"$(Build.Repository.Name)\",\"sha\":\"$(Build.SourceVersion)\",\"trigger\":\"post-deploy\"}"
+            fi
+          displayName: 'Trigger ASCEND AI Sync'

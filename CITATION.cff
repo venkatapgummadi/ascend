@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use ASCEND in academic work, please cite it as follows."
+title: "ASCEND: A Comprehensive DevSecOps Framework for Automated Code Scanning, Multi-Track Deployment, and AI-Powered Post-Deployment Synchronization in Enterprise CI/CD"
+type: software
+authors:
+  - given-names: "Venkata Pavan Kumar"
+    family-names: "Gummadi"
+    email: "venkata.p.gummadi@ieee.org"
+    orcid: "https://orcid.org/0009-0005-4435-0197"
+    affiliation: "IEEE Senior Member"
+version: "0.1.0"
+date-released: "2026-04-21"
+license: MIT
+repository-code: "https://github.com/venkatapgummadi/ascend"
+keywords:
+  - DevSecOps
+  - CI/CD
+  - SAST
+  - DAST
+  - SCA
+  - Infrastructure as Code
+  - AI-powered code synchronization
+  - Multi-track deployment
+  - Security engineering
+preferred-citation:
+  type: article
+  title: "ASCEND: A Comprehensive DevSecOps Framework for Automated Code Scanning, Multi-Track Deployment, and AI-Powered Post-Deployment Synchronization in Enterprise CI/CD"
+  authors:
+    - given-names: "Venkata Pavan Kumar"
+      family-names: "Gummadi"
+  year: 2026
+  month: 4
+  notes: "Preprint"

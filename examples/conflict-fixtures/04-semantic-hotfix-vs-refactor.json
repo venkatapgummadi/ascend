@@ -1,0 +1,9 @@
+{
+  "file_path": "app/middleware.py",
+  "ours": "class AuthMiddleware:\n    def __init__(self):\n        self.validator = JwtValidator(required_scopes=['api:read'])\n\n    def __call__(self, request, next_handler):\n        # HOTFIX: enforce strict token expiry check before validator\n        token = extract_token(request)\n        if not token or token_expiration(token) < now():\n            raise UnauthorizedError('expired or missing token')\n        claims = self.validator.validate(token)\n        request.user = claims.sub\n        return next_handler(request)\n",
+  "theirs": "class AuthMiddleware:\n    def __init__(self, device_flow_enabled=True):\n        self.validator = OAuth2DeviceFlowValidator() if device_flow_enabled \\\n            else JwtValidator(required_scopes=['api:read'])\n\n    def __call__(self, request, next_handler):\n        token = extract_token(request)\n        if not token:\n            raise UnauthorizedError('missing token')\n        claims = self.validator.validate(token)\n        request.user = claims.sub\n        return next_handler(request)\n",
+  "base": "class AuthMiddleware:\n    def __init__(self):\n        self.validator = JwtValidator(required_scopes=['api:read'])\n\n    def __call__(self, request, next_handler):\n        token = extract_token(request)\n        if not token:\n            raise UnauthorizedError('missing token')\n        claims = self.validator.validate(token)\n        request.user = claims.sub\n        return next_handler(request)\n",
+  "expected_type": "semantic",
+  "expected_confidence_floor": 0.7,
+  "description": "The scenario from the paper: OURS has a CVE-class hotfix (strict expiry validation), THEIRS refactored to add OAuth device flow. A correct resolution preserves BOTH the hotfix and the OAuth refactor."
+}

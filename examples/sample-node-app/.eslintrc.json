@@ -1,0 +1,19 @@
+{
+  "env": {
+    "node": true,
+    "es2023": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2023,
+    "sourceType": "commonjs"
+  },
+  "rules": {
+    "strict": ["error", "global"],
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error",
+    "no-process-exit": "warn",
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
+  }
+}

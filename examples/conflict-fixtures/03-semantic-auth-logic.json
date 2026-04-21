@@ -1,0 +1,9 @@
+{
+  "file_path": "app/auth.py",
+  "ours": "def authenticate(token):\n    claims = decode_jwt(token)\n    if claims is None:\n        return None\n    if claims['exp'] < now():\n        return None\n    return claims['sub']\n",
+  "theirs": "def authenticate(token):\n    claims = decode_jwt(token)\n    if claims is None:\n        return None\n    if not has_valid_scope(claims, required_scope='user:read'):\n        return None\n    return claims['sub']\n",
+  "base": "def authenticate(token):\n    claims = decode_jwt(token)\n    if claims is None:\n        return None\n    return claims['sub']\n",
+  "expected_type": "semantic",
+  "expected_confidence_floor": 0.7,
+  "description": "OURS added expiry check; THEIRS added scope check. Both are independent security invariants that should be combined in the resolution, not chosen between."
+}

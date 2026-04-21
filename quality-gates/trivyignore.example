@@ -1,0 +1,12 @@
+# ASCEND .trivyignore example
+# Copy to your repo root as .trivyignore and customize.
+# Format: one CVE ID per line. Optional expiration after "exp:YYYY-MM-DD".
+
+# Example: unfixable CVE in base image — revisit after 2026-06-01 base image update
+# CVE-2024-12345  exp:2026-06-01
+
+# Example: false positive — vendored library not actually reachable
+# CVE-2024-67890
+
+# Example: accepted risk documented in SECURITY_EXCEPTIONS.md
+# CVE-2024-99999

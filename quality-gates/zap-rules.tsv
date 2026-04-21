@@ -1,0 +1,43 @@
+# ASCEND OWASP ZAP rules file
+# Format: ID<TAB>Action<TAB>Description
+# Action: IGNORE | WARN | FAIL
+# Place as .zap/rules.tsv in your repo.
+
+10003	FAIL	Vulnerable JS Library
+10010	FAIL	Cookie No HttpOnly Flag
+10011	FAIL	Cookie Without Secure Flag
+10016	WARN	Web Browser XSS Protection Not Enabled
+10017	WARN	Cross-Domain JavaScript Source File Inclusion
+10020	FAIL	X-Frame-Options Header Scanner
+10021	WARN	X-Content-Type-Options Header Missing
+10023	WARN	Information Disclosure - Debug Error Messages
+10027	WARN	Information Disclosure - Suspicious Comments
+10032	WARN	Viewstate Scanner
+10035	WARN	Strict-Transport-Security Header
+10036	WARN	Server Leaks Version Information
+10037	IGNORE	Server Leaks Information via "X-Powered-By" HTTP Response Header Field
+10038	FAIL	Content Security Policy (CSP) Header Not Set
+10040	FAIL	Secure Pages Include Mixed Content
+10054	WARN	Cookie Without SameSite Attribute
+10055	FAIL	CSP Scanner
+10063	WARN	Permissions Policy Header Not Set
+10105	WARN	Weak Authentication Method
+10202	FAIL	Absence of Anti-CSRF Tokens
+40008	FAIL	Parameter Tampering
+40009	FAIL	Server Side Include
+40012	FAIL	Cross Site Scripting (Reflected)
+40014	FAIL	Cross Site Scripting (Persistent)
+40016	FAIL	Cross Site Scripting (Persistent) - Prime
+40017	FAIL	Cross Site Scripting (Persistent) - Spider
+40018	FAIL	SQL Injection
+40019	FAIL	SQL Injection - MySQL
+40020	FAIL	SQL Injection - Hypersonic SQL
+40021	FAIL	SQL Injection - Oracle
+40022	FAIL	SQL Injection - PostgreSQL
+40024	FAIL	SQL Injection - SQLite
+40027	FAIL	SQL Injection - MsSQL
+40032	FAIL	.htaccess Information Leak
+90019	FAIL	Code Injection
+90020	FAIL	Remote OS Command Injection
+90022	WARN	Application Error Disclosure
+90033	WARN	Loosely Scoped Cookie
