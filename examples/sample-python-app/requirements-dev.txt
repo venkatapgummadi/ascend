@@ -9,5 +9,5 @@ ruff==0.7.1
 black==24.10.0
 
 # Security scanning (local)
-bandit==1.7.10
+bandit==1.9.4
 pip-audit==2.7.3
