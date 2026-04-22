@@ -68,9 +68,9 @@ class ConflictClassifier:
 
     # Feature extraction regex patterns
     _WHITESPACE_ONLY_DIFF = re.compile(r"^\s*$")
-    _IMPORT_LINE = re.compile(r"^\s*(import|from)\s+\w+", re.MULTILINE)
+    _IMPORT_LINE = re.compile(r"^\s*(?:import|from)\s+\w+", re.MULTILINE)
     _CLASS_DEF = re.compile(r"^\s*class\s+\w+", re.MULTILINE)
-    _FUNC_DEF = re.compile(r"^\s*(def|async\s+def)\s+\w+", re.MULTILINE)
+    _FUNC_DEF = re.compile(r"^\s*(?:def|async\s+def)\s+\w+", re.MULTILINE)
     _CONFIG_KEYS = re.compile(
         r"^\s*[\w_-]+\s*[:=]\s*[\"']?\S", re.MULTILINE
     )
