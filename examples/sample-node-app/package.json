@@ -16,7 +16,7 @@
     "audit": "npm audit --audit-level=high"
   },
   "dependencies": {
-    "express": "^4.21.1",
+    "express": "^5.2.1",
     "jsonwebtoken": "^9.0.2",
     "better-sqlite3": "^11.3.0",
     "helmet": "^8.0.0",
