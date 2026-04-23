@@ -20,7 +20,7 @@
     "jsonwebtoken": "^9.0.2",
     "better-sqlite3": "^11.3.0",
     "helmet": "^8.0.0",
-    "express-rate-limit": "^7.4.1"
+    "express-rate-limit": "^8.3.2"
   },
   "devDependencies": {
     "eslint": "^9.13.0",
