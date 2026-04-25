@@ -37,6 +37,8 @@ htmlcov/
 coverage.xml
 *.cover
 .hypothesis/
+pytest-cache-files-*/
+.ruff_cache/
 
 # LaTeX artifacts
 *.aux

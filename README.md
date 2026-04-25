@@ -182,13 +182,13 @@ ASCEND is described in detail in the accompanying research paper. The paper pres
 **Citation:**
 
 ```bibtex
-@misc{gummadi2025ascend,
+@misc{gummadi2026ascend,
   title  = {ASCEND: A Comprehensive DevSecOps Framework for Automated Code Scanning,
             Multi-Track Deployment, and AI-Powered Post-Deployment Synchronization
             in Enterprise CI/CD},
   author = {Gummadi, Venkata Pavan Kumar},
   year   = {2026},
-  note   = {Preprint}
+  note   = {Preprint; manuscript under review at IEEE Access}
 }
 ```
 
@@ -226,4 +226,4 @@ Email: venkata.p.gummadi@ieee.org
 
 ## Acknowledgments
 
-The ASCEND framework draws on the public DevSecOps knowledge base assembled by the broader security engineering community, including the NIST Cybersecurity Framework, OWASP Top 10, CIS Benchmarks, and the authors of the scanning tools integrated into this framework.
+The ASCEND framework draws on the public DevSecOps knowledge base assembled by the broader security engineering community, including the NIST Cybersecurity Framework (CSF 2.0), the NIST Secure Software Development Framework (SSDF, SP 800-218), CIS Benchmarks, and the authors of the scanning tools integrated into this framework.

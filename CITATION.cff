@@ -28,6 +28,8 @@ preferred-citation:
   authors:
     - given-names: "Venkata Pavan Kumar"
       family-names: "Gummadi"
+      orcid: "https://orcid.org/0009-0005-4435-0197"
   year: 2026
   month: 4
-  notes: "Preprint"
+  journal: "IEEE Access"
+  notes: "Preprint; manuscript under review at IEEE Access. Update this entry with the arXiv/TechRxiv DOI once the preprint is posted, and with the IEEE Access DOI, volume, and pages once the paper is accepted."
