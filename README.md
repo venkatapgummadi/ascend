@@ -4,9 +4,13 @@
 
 A comprehensive four-layer DevSecOps framework that integrates automated security scanning directly into CI/CD pipelines with build-gating mechanisms, multi-track deployment orchestration, and AI-powered post-deployment code synchronization.
 
+[![CI](https://github.com/venkatapgummadi/ascend/actions/workflows/test.yml/badge.svg)](https://github.com/venkatapgummadi/ascend/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Paper](https://img.shields.io/badge/paper-PDF-red.svg)](./docs/paper/ASCEND.pdf)
+[![GitHub stars](https://img.shields.io/github/stars/venkatapgummadi/ascend?style=social)](https://github.com/venkatapgummadi/ascend/stargazers)
+[![Last commit](https://img.shields.io/github/last-commit/venkatapgummadi/ascend)](https://github.com/venkatapgummadi/ascend/commits/main)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
 ---
 

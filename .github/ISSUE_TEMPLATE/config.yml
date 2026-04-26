@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discussions — Q&A and ideas
+    url: https://github.com/venkatapgummadi/ascend/discussions
+    about: Have a question or want to discuss an idea? Use Discussions instead of opening an issue.
+  - name: Security vulnerability
+    url: https://github.com/venkatapgummadi/ascend/security/policy
+    about: Report a vulnerability privately — please do not open a public issue.
+  - name: Documentation issue
+    url: https://github.com/venkatapgummadi/ascend/issues/new?template=bug_report.md&labels=documentation
+    about: Report a documentation problem.
