@@ -398,3 +398,10 @@ The package follows [Semantic Versioning](https://semver.org). Public API stabil
 - **Patch version bumps** (`0.1.0` → `0.1.1`) are bug-fix only.
 
 Until `1.0.0`, the API is marked alpha. Breaking changes will be documented in [CHANGELOG.md](../CHANGELOG.md).
+
+
+---
+
+## Auto-generated contribution
+
+Added by bounty bot.
