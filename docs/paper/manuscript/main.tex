@@ -25,8 +25,8 @@
 
 \begin{document}
 
-\history{Date of publication xxxx 00, 0000, date of current version xxxx 00, 0000.}
-\doi{10.1109/ACCESS.2026.XXXXXXX}
+\history{Manuscript under review at IEEE Access.}
+\doi{To be assigned upon acceptance.}
 
 \title{ASCEND: A Comprehensive DevSecOps Framework for Automated Code Scanning, Multi-Track Deployment, and AI-Powered Post-Deployment Synchronization in Enterprise CI/CD}
 
@@ -35,7 +35,7 @@
 
 \address[1]{Independent Researcher, Professional Software Engineer}
 
-\tfootnote{This work was conducted as independent research by the author. The author received no external funding.}
+\tfootnote{This work was conducted as independent research by the author. The author received no external funding. The framework, including all platform configurations, the AI synchronization module source, the conflict-fixtures benchmark suite, and the experimental analysis pipeline, is openly available at \texttt{github.com/venkatapgummadi/ascend}~\cite{gummadi2026ascend-software} under the MIT license; the submission release (v1.0) is archived on Zenodo with DOI \texttt{10.5281/zenodo.19918779}.}
 
 
 \corresp{Corresponding author: Venkata Pavan Kumar Gummadi (e-mail: \texttt{venkata.p.gummadi@ieee.org}).}
@@ -684,7 +684,7 @@ The multi-tool scanning design achieves 96 percent combined vulnerability detect
 The 26-week study was conducted as observational research over engineering metrics already collected by each participating organization's CI/CD platform. No personally identifiable information about contributors was collected, and the data-handling pipeline (Section~\ref{sec:eval}) suppresses any aggregate cell with $k < 5$ underlying records. Each participating organization's data-protection office reviewed and approved the protocol. Because the unit of analysis is the repository rather than any individual person, the study was determined to be exempt from human-subjects research review by the participating organizations' internal review processes.
 
 \section*{Data Availability Statement}
-The ASCEND framework---platform configurations for all four CI/CD systems, the AI synchronization module source, the conflict-fixtures benchmark suite, and the experimental analysis pipeline---is openly available at \url{https://github.com/venkatapgummadi/ascend} under the MIT license. The companion analysis script \texttt{evaluation/statistics.py} reproduces Table~\ref{tab:stats} byte-for-byte from a per-repository, per-week, $k$-anonymized CSV in the documented schema. Per-repository telemetry from the 26-week study cannot be released due to organizational data-handling agreements; restricted-access reproductions are available on request to the corresponding author, subject to the participating organizations' data-sharing terms.
+The ASCEND framework---platform configurations for all four CI/CD systems, the AI synchronization module source, the conflict-fixtures benchmark suite, and the experimental analysis pipeline---is openly available at \texttt{github.com/venkatapgummadi/ascend} under the MIT license. The submission release (v1.0) is archived on Zenodo with persistent identifier DOI~\texttt{10.5281/zenodo.19918779}~\cite{gummadi2026ascend-software}; we recommend reviewers cite the Zenodo record for reproducibility, and the GitHub URL for ongoing development. The companion analysis script \texttt{evaluation/statistics.py} reproduces Table~\ref{tab:stats} byte-for-byte from a per-repository, per-week, $k$-anonymized CSV in the documented schema. Per-repository telemetry from the 26-week study cannot be released due to organizational data-handling agreements; restricted-access reproductions are available on request to the corresponding author, subject to the participating organizations' data-sharing terms.
 
 \section*{Reproducibility Note}
 A reviewer-facing checklist that maps each citation key to its archival source, lists code-vs-paper alignment notes, and provides pre-resubmission verification commands is included in the open-source repository at \texttt{docs/paper/REVIEWER\_CHECKLIST.md}. The extended methodology document at \texttt{docs/paper/EVALUATION.md} provides the variable definitions, anonymization pipeline, and threats-to-validity expansion that did not fit within the page budget of this article.

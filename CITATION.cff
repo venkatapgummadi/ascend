@@ -41,7 +41,7 @@ keywords:
   - Security engineering
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.PENDING"
+    value: "10.5281/zenodo.19918779"
     description: "Zenodo archive of the v0.1.0 source artefact (DOI pending registration before camera-ready submission)."
 preferred-citation:
   type: article
