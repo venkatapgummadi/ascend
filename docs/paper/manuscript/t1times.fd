@@ -1,0 +1,9 @@
+\DeclareFontFamily{T1}{times}{}
+\DeclareFontShape{T1}{times}{n}{n}{<->   t1-times}{}
+\DeclareFontShape{T1}{times}{m}{n}{<->   t1-times}{}
+\DeclareFontShape{T1}{times}{n}{it}{<->   t1-times-italic}{}
+\DeclareFontShape{T1}{times}{m}{it}{<->   t1-times-italic}{}
+\DeclareFontShape{T1}{times}{b}{n}{<->   t1-times-bold}{}
+\DeclareFontShape{T1}{times}{bx}{n}{<->   t1-times-bold}{}
+\DeclareFontShape{T1}{times}{b}{it}{<->   t1-times-bolditalic}{}
+\DeclareFontShape{T1}{times}{bx}{it}{<->   t1-times-bolditalic}{}

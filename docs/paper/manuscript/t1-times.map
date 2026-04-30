@@ -1,0 +1,4 @@
+t1-times TimesLTStd-Roman < t1-times.pfb
+t1-times-italic TimesLTStd-Italic < t1-times-italic.pfb
+t1-times-bold TimesLTStd-Bold < t1-times-bold.pfb
+t1-times-bolditalic TimesLTStd-BoldItalic < t1-times-bolditalic.pfb
