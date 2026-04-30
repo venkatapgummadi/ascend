@@ -109,3 +109,5 @@ logs/
 
 # mypy cache
 .mypy_cache/
+
+evaluation/results.json
