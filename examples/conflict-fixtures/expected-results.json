@@ -1,0 +1,7 @@
+{
+  "_note": "Expected output of run_fixtures.py against the bundled fixtures. Used by CI/Make/eval to assert the heuristic baseline hasn't silently regressed. Update this file deliberately, with a CHANGELOG entry, when fixtures or the heuristic change.",
+  "classifier": "heuristic-baseline",
+  "n_fixtures": 7,
+  "hits": 5,
+  "accuracy": 0.7143
+}

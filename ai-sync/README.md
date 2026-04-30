@@ -123,20 +123,23 @@ Human review is always required before merge — AI sync proposes, humans dispos
 
 ## Model training
 
-The shipped classifier is a baseline model. For production use, retrain on your organization's historical merge conflict resolutions:
+The shipped classifier is a heuristic baseline. For production use, retrain on your organization's historical merge conflict resolutions, then load the resulting model via `ConflictClassifier(model_path=...)`.
 
-```bash
-python -m ascend_sync.train \
-    --input data/merge_conflicts.jsonl \
-    --output models/conflict_classifier.pkl \
-    --validation-split 0.2
-```
-
-Input format — one JSON object per line:
+A reference training pipeline is out of scope for this package — the package surface area stays inference-only so that the deployment image is small and free of training-only dependencies (sklearn is the only ML dep). The expected corpus schema is one JSON object per line:
 
 ```json
 {"conflict_type": "semantic", "ours": "...", "theirs": "...", "base": "...", "resolved": "..."}
 ```
+
+The 10-feature vector consumed by the model (see `_classify_with_model` in `conflict_classifier.py`) is:
+
+```
+[is_config_file, whitespace_only_diff, has_import_diff,
+ has_class_changes, has_function_changes, config_keys_diff,
+ lines_ours, lines_theirs, size_ratio, shared_token_ratio]
+```
+
+Any sklearn-compatible classifier with `predict_proba` and a `classes_` attribute matching `ConflictType` values will work.
 
 ## Limitations
 

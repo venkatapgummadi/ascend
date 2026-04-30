@@ -56,8 +56,9 @@ class PROrchestrator:
     ) -> None:
         self.github_token = github_token or os.environ.get("GITHUB_TOKEN", "")
         self.api_base = api_base.rstrip("/")
-        self.default_labels = default_labels or ["ai-sync", "automated"]
-        self.default_reviewers = default_reviewers or []
+        # Use `is None` checks so callers can pass `[]` to opt out of labels/reviewers.
+        self.default_labels = ["ai-sync", "automated"] if default_labels is None else list(default_labels)
+        self.default_reviewers = [] if default_reviewers is None else list(default_reviewers)
 
         if not self.github_token:
             logger.warning("No GITHUB_TOKEN configured — PR creation will fail when called.")

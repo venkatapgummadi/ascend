@@ -54,12 +54,26 @@ class DriftDetector:
     """
     Detects semantic drift between two code states.
 
+    Implements the drift signal described in IEEE Access §VII.A:
+
+        r = w_sem · sem_norm + w_cfg · cfg_norm + w_emb · emb_norm,
+        triggered when r > theta.
+
+    The shipped weights (0.50, 0.25, 0.25) reflect the framework's
+    prior on semantic-AST signal being the most reliable indicator;
+    organisations can retune via the constructor. The paper notes
+    that an MLP risk scorer can replace the linear combination — that
+    is a future-work item; the linear form is the published baseline
+    referenced in EVALUATION.md §6.
+
     Parameters
     ----------
     threshold : float
-        Risk score above which drift is reported. Default 0.30.
+        Risk score above which drift is reported. Default 0.30, matching
+        the threshold used in the paper's case study (§VII.C).
     weight_semantic, weight_config, weight_embedding : float
         Weights for combining the three signal components into a risk score.
+        Sum is not constrained to 1.0; the constructor does not normalise.
     """
 
     def __init__(

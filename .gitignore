@@ -106,3 +106,8 @@ logs/
 # OS
 .directory
 *.orig
+
+# mypy cache
+.mypy_cache/
+
+evaluation/results.json

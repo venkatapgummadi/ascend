@@ -4,7 +4,7 @@
 
 ### What is ASCEND?
 
-ASCEND is a comprehensive four-layer DevSecOps framework that integrates automated security scanning into CI/CD pipelines with build-gating, multi-track deployment orchestration, and AI-powered post-deployment code synchronization. It is described in detail in the accompanying [research paper](./docs/paper/ASCEND.pdf).
+ASCEND is a comprehensive four-layer DevSecOps framework that integrates automated security scanning into CI/CD pipelines with build-gating, multi-track deployment orchestration, and AI-powered post-deployment code synchronization. It is described in detail in the accompanying [research paper](./docs/paper/README.md).
 
 ### Who is ASCEND for?
 

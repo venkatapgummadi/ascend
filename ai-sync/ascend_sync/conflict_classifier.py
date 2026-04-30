@@ -8,21 +8,64 @@ Categorizes a three-way merge conflict (ours, theirs, base) into one of:
   - STRUCTURAL:     architectural refactoring (file moves, class reorgs)
   - CONFIGURATION:  environment-specific parameters
 
-Ships a baseline feature-based classifier. Production deployments should
-retrain on organization-specific merge conflict history via `train.py`.
+Ships a heuristic feature-based classifier. Production deployments should
+retrain on organization-specific merge conflict history; pass the resulting
+sklearn model to `ConflictClassifier(model_path=...)` to override the
+heuristic. The training pipeline is out of scope for this package — see
+`docs/paper/EVALUATION.md` for the corpus schema expected by the model.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
-import pickle
+import os
+import pickle  # nosec B403  see _safe_pickle_load below
 import re
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
+
+def _safe_pickle_load(path: Path) -> object:
+    """Deserialise a pickled sklearn model with explicit opt-in safeguards.
+
+    Pickle is unsafe when applied to untrusted data (CWE-502). We accept the
+    risk because sklearn's documented persistence format is pickle and the
+    package is intended to load *its own* trained models. Two opt-in
+    safeguards must be satisfied before the load is performed:
+
+    1.  The environment variable ``ASCEND_TRUST_MODEL_PATH`` must be set
+        truthy. This is an explicit deployment-time acknowledgement that the
+        configured ``model_path`` is treated as trusted input.
+    2.  If a sidecar ``<model_path>.sha256`` file exists, the digest of
+        ``model_path`` must match the sidecar exactly.
+
+    Either condition alone suffices, but at least one is required. This
+    closes the static-analysis finding without forcing the package to ship
+    its own opinionated model serialisation format.
+    """
+    trust_env = os.environ.get("ASCEND_TRUST_MODEL_PATH", "").lower() in {"1", "true", "yes"}
+    digest_path = path.with_suffix(path.suffix + ".sha256")
+    digest_ok = False
+    if digest_path.exists():
+        expected = digest_path.read_text(encoding="utf-8").strip().split()[0].lower()
+        actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        digest_ok = (expected == actual)
+        if not digest_ok:
+            raise ValueError(
+                f"sha256 mismatch for {path}: expected {expected}, got {actual}"
+            )
+    if not (trust_env or digest_ok):
+        raise PermissionError(
+            f"Refusing to unpickle {path}: set ASCEND_TRUST_MODEL_PATH=1 "
+            f"or place a {digest_path.name} sidecar with the expected sha256 hash."
+        )
+    with open(path, "rb") as f:
+        return pickle.load(f)  # nosec B301  guarded by ASCEND_TRUST_MODEL_PATH or sha256 sidecar
 
 
 class ConflictType(str, Enum):
@@ -48,7 +91,7 @@ class Conflict:
 class Classification:
     conflict_type: ConflictType
     confidence: float
-    features: dict = None
+    features: dict | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -62,8 +105,26 @@ class ConflictClassifier:
     """
     Feature-based conflict classifier.
 
-    The baseline implementation uses hand-engineered features; the trained
-    sklearn model (when available at `model_path`) is loaded automatically.
+    Categorises a three-way merge conflict (ours, theirs, base) into
+    {syntactic, semantic, structural, configuration} as defined in
+    IEEE Access §VII.B.
+
+    The shipped baseline is a heuristic (rule-based) classifier whose
+    confidence values (0.97 / 0.92 / 0.82 / 0.78 / 0.65 / 0.80 / 0.60)
+    are *priors*, not empirical posteriors. They reflect how reliable
+    each rule is in our internal labelling exercise:
+
+      * 0.97  whitespace-only diff  (almost certainly syntactic)
+      * 0.92  config file with key changes  (config category)
+      * 0.82  import-only diff with no function changes  (syntactic)
+      * 0.78  large size change with class changes  (structural)
+      * 0.65  class but no function changes  (likely structural)
+      * 0.80  function changes with high token overlap  (semantic)
+      * 0.60  fallback  (semantic, low confidence)
+
+    Production deployments should retrain on organisation-specific
+    history per the paper's §VII.B; loading a trained sklearn model
+    via `model_path` overrides the heuristic entirely.
     """
 
     # Feature extraction regex patterns
@@ -82,8 +143,7 @@ class ConflictClassifier:
         self._model = None
         if model_path and Path(model_path).exists():
             try:
-                with open(model_path, "rb") as f:
-                    self._model = pickle.load(f)
+                self._model = _safe_pickle_load(Path(model_path))
                 logger.info("Loaded trained classifier from %s", model_path)
             except Exception as exc:
                 logger.warning("Failed to load model from %s: %s. Falling back to heuristics.", model_path, exc)
@@ -111,9 +171,10 @@ class ConflictClassifier:
     def _extract_features(self, conflict: Conflict) -> dict:
         ours, theirs = conflict.ours, conflict.theirs
         path_lower = conflict.file_path.lower()
+        # A path is a config file if it ends in a known config extension
+        # OR its basename matches a known config-file token (Dockerfile, .env, etc.).
         is_config_file = (
             path_lower.endswith(self._CONFIG_FILE_EXTENSIONS)
-            or any(tok in path_lower for tok in self._CONFIG_FILE_EXTENSIONS)
             or any(tok in path_lower for tok in self._CONFIG_BASENAME_TOKENS)
         )
         return {

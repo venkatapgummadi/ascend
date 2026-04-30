@@ -7,7 +7,7 @@ A comprehensive four-layer DevSecOps framework that integrates automated securit
 [![CI](https://github.com/venkatapgummadi/ascend/actions/workflows/test.yml/badge.svg)](https://github.com/venkatapgummadi/ascend/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Paper](https://img.shields.io/badge/paper-PDF-red.svg)](./docs/paper/ASCEND.pdf)
+[![Paper](https://img.shields.io/badge/paper-info-red.svg)](./docs/paper/README.md)
 [![GitHub stars](https://img.shields.io/github/stars/venkatapgummadi/ascend?style=social)](https://github.com/venkatapgummadi/ascend/stargazers)
 [![Last commit](https://img.shields.io/github/last-commit/venkatapgummadi/ascend)](https://github.com/venkatapgummadi/ascend/commits/main)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
@@ -92,6 +92,28 @@ Push a commit to your feature branch. ASCEND will execute Layer 1 scanning immed
 
 ---
 
+## Reproducing the paper's results
+
+The IEEE Access submission (`docs/paper/`) makes specific empirical claims (83.0% critical-vuln reduction, 43.5% MTTD improvement, 94.2% AI conflict-resolution accuracy, all at p < 0.001 with d > 2.0). The reproduction harness lives in [`evaluation/`](./evaluation/) and is wired into the root `Makefile`.
+
+```bash
+# Full reproduction pass (install, test, lint, eval, stats)
+make repro
+
+# Or step-by-step:
+make install    # editable install + dev extras
+make test       # pytest (25 tests)
+make lint       # ruff
+make eval       # conflict-fixtures benchmark, asserts heuristic baseline
+make stats      # Welch t-test + Cohen's d on aggregate-metrics.csv
+```
+
+The `make eval` target asserts the heuristic conflict classifier still achieves a 71% baseline on the bundled fixtures. The `make stats` target runs the analysis pipeline against a synthetic schema-demonstration CSV; reproducing the paper's actual Table IX numbers requires the NDA-protected per-repository telemetry as documented in [`evaluation/README.md`](./evaluation/README.md) and [`docs/paper/EVALUATION.md`](./docs/paper/EVALUATION.md).
+
+For the full reviewer-facing reproducibility paper trail, see [`docs/paper/REVIEWER_CHECKLIST.md`](./docs/paper/REVIEWER_CHECKLIST.md).
+
+---
+
 ## Adoption Roadmap
 
 ASCEND is designed for incremental adoption. Most organizations realize the majority of security value from Layer 1 alone.
@@ -115,7 +137,7 @@ ASCEND/
 │   ├── architecture.md
 │   ├── quality-gates.md
 │   ├── adoption-guide.md
-│   └── paper/               # Published research paper (PDF + LaTeX)
+│   └── paper/               # Research paper sources and metadata
 ├── platforms/               # Platform-specific CI/CD configurations
 │   ├── github-actions/
 │   ├── gitlab-ci/
@@ -126,10 +148,11 @@ ASCEND/
 │   ├── tests/
 │   └── examples/
 ├── quality-gates/           # Scanning tool configurations
-│   ├── sonarqube/
-│   ├── semgrep/
-│   ├── checkov/
-│   └── zap/
+│   ├── sonarqube-quality-gate.json
+│   ├── semgrep-rules.yml
+│   ├── checkov-config.yml
+│   ├── zap-rules.tsv
+│   └── trufflehog-config.yml
 ├── examples/                # Sample applications with ASCEND integrated
 └── scripts/                 # Setup and validation utilities
 ```
@@ -152,7 +175,8 @@ ASCEND/
 - [AI Synchronization Module](./ai-sync/README.md) — Layer 4 deep-dive
 - [API Reference](./docs/api-reference.md) — Python API for `ascend_sync`
 - [Glossary](./docs/glossary.md) — terminology
-- [Research Paper (PDF)](./docs/paper/ASCEND.pdf) — full technical treatment
+- [Research Paper](./docs/paper/README.md) — manuscript status, citation, and rebuild instructions
+- [Case Study: AI-Suggested Dependency Downgrade](./docs/case-study-ai-cve-dependency.md) — worked example of an AI-introduced CVE caught at QG1
 
 ### Enterprise and compliance
 

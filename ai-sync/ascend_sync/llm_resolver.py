@@ -31,7 +31,7 @@ class Resolution:
     model: str
     confidence: float
     reasoning: str = ""
-    preserves_invariants: list[str] = None
+    preserves_invariants: list[str] | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -48,16 +48,30 @@ class LLMResolver:
     """
     LLM-backed resolver that generates candidate resolutions.
 
+    Implements the candidate-generation step of IEEE Access Eq. (4):
+
+        r* = argmax_{r in R} P(r | c_ours, c_theirs, c_base, H),
+
+    where H is historical resolution context. We approximate the argmax
+    by sampling `max_candidates` resolutions from the underlying LLM
+    with temperature drawn from a small grid (base temperature plus
+    +0.1 per candidate index) and rely on the downstream Verifier to
+    rank candidates by validity.
+
     Parameters
     ----------
     provider : "openai" | "anthropic" | "local"
-        Which backend to use.
+        Which backend to use. The "local" provider is a deterministic
+        offline stub and does not require API keys.
     model : str
         Model name (e.g., "gpt-4o-mini", "claude-opus-4-6").
     max_candidates : int
         How many candidate resolutions to generate per conflict.
+        The paper's §VII.B uses 3.
     temperature : float
-        Sampling temperature.
+        Base sampling temperature. Each candidate is sampled with
+        temperature = base + 0.1 * candidate_index to encourage
+        diversity in the candidate set.
     """
 
     def __init__(

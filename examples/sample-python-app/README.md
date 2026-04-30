@@ -30,8 +30,6 @@ sample-python-app/
 ├── Dockerfile
 ├── requirements.txt
 ├── requirements-dev.txt
-├── .checkov.baseline
-├── .trivyignore
 ├── .gitignore
 └── README.md
 ```

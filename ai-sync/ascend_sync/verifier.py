@@ -69,7 +69,26 @@ _SECURITY_PATTERNS = [
 class Verifier:
     """
     Verifies that a candidate resolution is syntactically valid and
-    preserves critical behavioral invariants.
+    preserves critical behavioural invariants.
+
+    Implements the validity predicate of IEEE Access Eq. (5):
+
+        Valid(r) = forall x in X : f_merged(x; r) ≡ f_expected(x).
+
+    The shipped baseline approximates this with three computable proxies:
+
+      1. Syntactic validity (the resolution parses as Python).
+      2. Public function/class signature preservation
+         (every name defined in OURS or THEIRS is also defined in r).
+      3. Security-relevant pattern preservation
+         (any pattern from `_SECURITY_PATTERNS` present in OURS or THEIRS
+          must also appear in r).
+
+    The fourth proxy — property_tests — is a placeholder for the full
+    Hypothesis / QuickCheck-driven verification described in §VII.C.
+    The paper reports verification on 10,000 random inputs; this class
+    accepts a `property_tests` parameter that scales between the
+    quick (default 100) and paper (10000) configurations.
     """
 
     def __init__(self, property_tests: int = 100) -> None:
@@ -139,7 +158,8 @@ class Verifier:
             resolved_names = self._extract_defs_regex(resolution.resolved_code)
 
         required = ours_names | theirs_names
-        return required.issubset(resolved_names) or not required
+        # An empty `required` is trivially a subset, so no separate empty check needed.
+        return required.issubset(resolved_names)
 
     def _security_patterns_preserved(self, conflict: Conflict, resolution: Resolution) -> bool:
         union_source = conflict.ours + "\n" + conflict.theirs
@@ -166,8 +186,10 @@ class Verifier:
         required = ours_calls | theirs_calls
         if not required:
             return 0, 0
-        total = min(self.property_tests, len(required))
-        passed = sum(1 for name in list(required)[:total] if name in resolved_calls)
+        # Sort for deterministic test selection (set iteration order is undefined).
+        ordered = sorted(required)
+        total = min(self.property_tests, len(ordered))
+        passed = sum(1 for name in ordered[:total] if name in resolved_calls)
         return passed, total
 
     # -------------------------------------------------------------------------

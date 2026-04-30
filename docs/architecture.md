@@ -135,4 +135,4 @@ See the [platforms/](../platforms/) directory for complete, runnable pipeline de
 - [Quality Gate specifications](./quality-gates.md)
 - [Adoption roadmap](./adoption-guide.md)
 - [AI Synchronization Module](../ai-sync/README.md)
-- [Research paper (PDF)](./paper/ASCEND.pdf)
+- [Research paper](./paper/README.md)

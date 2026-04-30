@@ -68,7 +68,11 @@ target-version = "py39"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "T20", "RUF"]
-ignore = ["S101", "S301", "RUF012"]  # allow assert in tests
+ignore = ["S101", "S301", "RUF012"]  # allow assert in tests; S301 has documented mitigation
+
+[tool.ruff.lint.per-file-ignores]
+# Tests routinely instantiate clients with placeholder tokens for mocking.
+"tests/*.py" = ["S105", "S106"]
 
 [tool.black]
 line-length = 120
@@ -77,4 +81,4 @@ target-version = ["py39", "py310", "py311", "py312"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "--cov=ascend_sync --cov-report=term-missing"
+addopts = "--cov=ascend_sync --cov-report=term-missing --cov-fail-under=70"

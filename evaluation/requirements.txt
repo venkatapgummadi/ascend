@@ -1,0 +1,5 @@
+# Minimum versions for evaluation/statistics.py reproducibility.
+# Pinned exactly to match the versions used to generate expected-results.json.
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.2
