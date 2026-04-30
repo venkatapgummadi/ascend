@@ -1,3 +1,4 @@
+\PassOptionsToPackage{hyphens}{url}
 \documentclass{ieeeaccess}
 
 \usepackage{cite}
@@ -35,7 +36,7 @@
 
 \address[1]{Independent Researcher, Professional Software Engineer}
 
-\tfootnote{This work was conducted as independent research by the author. The author received no external funding. The framework, including all platform configurations, the AI synchronization module source, the conflict-fixtures benchmark suite, and the experimental analysis pipeline, is openly available at \texttt{github.com/venkatapgummadi/ascend}~\cite{gummadi2026ascend-software} under the MIT license; the submission release (v1.0) is archived on Zenodo with DOI \texttt{10.5281/zenodo.19918779}.}
+\tfootnote{This work was conducted as independent research by the author. The author received no external funding. The framework, including all platform configurations, the AI synchronization module source, the conflict-fixtures benchmark suite, and the experimental analysis pipeline, is openly available at \texttt{github.com/\allowbreak venkatapgummadi/\allowbreak ascend}~\cite{gummadi2026ascend-software} under the MIT license; the submission release (v1.0) is archived on Zenodo with DOI \texttt{10.5281/\allowbreak zenodo.19918779}.}
 
 
 \corresp{Corresponding author: Venkata Pavan Kumar Gummadi (e-mail: \texttt{venkata.p.gummadi@ieee.org}).}
@@ -45,7 +46,7 @@ The rapid adoption of continuous integration and continuous deployment pipelines
 \end{abstract}
 
 \begin{keywords}
-AI-powered code synchronization, build gating, continuous integration, continuous deployment, DevSecOps, dynamic application security testing, infrastructure-as-code, merge conflict resolution, multi-track deployment, quality gates, software composition analysis, static application security testing.
+AI-powered code synchronization, build gating, continuous deployment, continuous integration, DevSecOps, dynamic application security testing, infrastructure-as-code, merge conflict resolution, multi-track deployment, quality gates, software composition analysis, static application security testing.
 \end{keywords}
 
 \titlepgskip=-21pt
@@ -60,10 +61,10 @@ The prevailing industry response has been to add security scanning as a post-bui
 
 A second, underaddressed challenge arises as organizations adopt multi-track deployment strategies that maintain parallel branches for development, staging, production, and hotfix paths. Hotfix patches applied directly to production are not reliably back-propagated to development branches, configuration drift between environments accumulates silently, and merge conflicts arising from parallel development tracks consume significant developer time. Empirical studies confirm the cost: Ghiotto \emph{et al.}~\cite{ghiotto2020merge} analyzed 2{,}731 open-source Java projects and found that a substantial fraction of merges produce conflicts requiring non-trivial developer effort, while Humble and Farley~\cite{humble2010continuous} and Chen~\cite{chen2015continuous} identify configuration drift between deployment tracks as a primary contributor to unplanned production incidents.
 
-This paper presents ASCEND, a framework that addresses both challenges through a layered architecture with four primary components: (1)~a source code analysis layer that enforces automated scanning gates at commit time; (2)~a build and integration layer with container scanning and infrastructure-as-code (IaC) validation; (3)~a deployment orchestration layer that manages multi-track promotion with dynamic application security testing (DAST) gates; and (4)~an AI-powered synchronization layer that detects drift, resolves conflicts, and orchestrates automated remediation. We provide platform configurations across the four dominant CI/CD platforms and evaluate ASCEND's effectiveness across twelve enterprise repositories over six months.
+This paper presents ASCEND, a framework that addresses both challenges through a layered architecture with four primary components: (1)~a source code analysis layer that enforces automated scanning gates at commit time; (2)~a build and integration layer with container scanning and infrastructure-as-code (IaC) validation; (3)~a deployment orchestration layer that manages multi-track promotion with dynamic application security testing (DAST) gates; and (4)~an artificial intelligence (AI)-powered synchronization layer that detects drift, resolves conflicts, and orchestrates automated remediation. We provide platform configurations across the four dominant CI/CD platforms and evaluate ASCEND's effectiveness across twelve enterprise repositories over six months.
 
 \subsection{Contributions}
-\textbf{In one sentence.} The new methods in this paper are (i)~a composite, weighted quality-gate model that aggregates heterogeneous scanner outputs into a single auditable scalar (Eqs.~\eqref{eq:proceed}--\eqref{eq:composite}); and (ii)~a closed-loop post-deployment synchronization layer that gates large-language-model conflict resolutions on property-based verification before pull-request creation. Everything else in the paper is engineering integration of existing scanning tools into a deployable framework.
+\textbf{In one sentence.} The new methods in this paper are (i)~a composite, weighted quality-gate model that aggregates heterogeneous scanner outputs into a single auditable scalar (Eqs.~\eqref{eq:proceed}--\eqref{eq:composite}); and (ii)~a closed-loop post-deployment synchronization layer that gates large language model (LLM) conflict resolutions on property-based verification before pull-request creation. Everything else in the paper is engineering integration of existing scanning tools into a deployable framework.
 
 \textit{Engineering and integration contributions.}
 \begin{enumerate}
@@ -684,11 +685,12 @@ The multi-tool scanning design achieves 96 percent combined vulnerability detect
 The 26-week study was conducted as observational research over engineering metrics already collected by each participating organization's CI/CD platform. No personally identifiable information about contributors was collected, and the data-handling pipeline (Section~\ref{sec:eval}) suppresses any aggregate cell with $k < 5$ underlying records. Each participating organization's data-protection office reviewed and approved the protocol. Because the unit of analysis is the repository rather than any individual person, the study was determined to be exempt from human-subjects research review by the participating organizations' internal review processes.
 
 \section*{Data Availability Statement}
-The ASCEND framework---platform configurations for all four CI/CD systems, the AI synchronization module source, the conflict-fixtures benchmark suite, and the experimental analysis pipeline---is openly available at \texttt{github.com/venkatapgummadi/ascend} under the MIT license. The submission release (v1.0) is archived on Zenodo with persistent identifier DOI~\texttt{10.5281/zenodo.19918779}~\cite{gummadi2026ascend-software}; we recommend reviewers cite the Zenodo record for reproducibility, and the GitHub URL for ongoing development. The companion analysis script \texttt{evaluation/statistics.py} reproduces Table~\ref{tab:stats} byte-for-byte from a per-repository, per-week, $k$-anonymized CSV in the documented schema. Per-repository telemetry from the 26-week study cannot be released due to organizational data-handling agreements; restricted-access reproductions are available on request to the corresponding author, subject to the participating organizations' data-sharing terms.
+The ASCEND framework---platform configurations for all four CI/CD systems, the AI synchronization module source, the conflict-fixtures benchmark suite, and the experimental analysis pipeline---is openly available at \texttt{github.com/\allowbreak venkatapgummadi/\allowbreak ascend} under the MIT license. The submission release (v1.0) is archived on Zenodo with persistent identifier DOI~\texttt{10.5281/\allowbreak zenodo.19918779}~\cite{gummadi2026ascend-software}; we recommend reviewers cite the Zenodo record for reproducibility, and the GitHub URL for ongoing development. The companion analysis script \texttt{evaluation/\allowbreak statistics.py} reproduces Table~\ref{tab:stats} byte-for-byte from a per-repository, per-week, $k$-anonymized CSV in the documented schema. Per-repository telemetry from the 26-week study cannot be released due to organizational data-handling agreements; restricted-access reproductions are available on request to the corresponding author, subject to the participating organizations' data-sharing terms.
 
 \section*{Reproducibility Note}
-A reviewer-facing checklist that maps each citation key to its archival source, lists code-vs-paper alignment notes, and provides pre-resubmission verification commands is included in the open-source repository at \texttt{docs/paper/REVIEWER\_CHECKLIST.md}. The extended methodology document at \texttt{docs/paper/EVALUATION.md} provides the variable definitions, anonymization pipeline, and threats-to-validity expansion that did not fit within the page budget of this article.
+A reviewer-facing checklist that maps each citation key to its archival source, lists code-vs-paper alignment notes, and provides pre-resubmission verification commands is included in the open-source repository at \texttt{docs/\allowbreak paper/\allowbreak REVIEWER\_CHECKLIST.md}. The extended methodology document at \texttt{docs/\allowbreak paper/\allowbreak EVALUATION.md} provides the variable definitions, anonymization pipeline, and threats-to-validity expansion that did not fit within the page budget of this article.
 
+\sloppy\emergencystretch=3em
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 
