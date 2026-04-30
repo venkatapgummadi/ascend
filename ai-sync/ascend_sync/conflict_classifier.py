@@ -48,7 +48,7 @@ class Conflict:
 class Classification:
     conflict_type: ConflictType
     confidence: float
-    features: dict = None
+    features: dict | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -111,9 +111,10 @@ class ConflictClassifier:
     def _extract_features(self, conflict: Conflict) -> dict:
         ours, theirs = conflict.ours, conflict.theirs
         path_lower = conflict.file_path.lower()
+        # A path is a config file if it ends in a known config extension
+        # OR its basename matches a known config-file token (Dockerfile, .env, etc.).
         is_config_file = (
             path_lower.endswith(self._CONFIG_FILE_EXTENSIONS)
-            or any(tok in path_lower for tok in self._CONFIG_FILE_EXTENSIONS)
             or any(tok in path_lower for tok in self._CONFIG_BASENAME_TOKENS)
         )
         return {

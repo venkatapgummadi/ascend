@@ -139,7 +139,8 @@ class Verifier:
             resolved_names = self._extract_defs_regex(resolution.resolved_code)
 
         required = ours_names | theirs_names
-        return required.issubset(resolved_names) or not required
+        # An empty `required` is trivially a subset, so no separate empty check needed.
+        return required.issubset(resolved_names)
 
     def _security_patterns_preserved(self, conflict: Conflict, resolution: Resolution) -> bool:
         union_source = conflict.ours + "\n" + conflict.theirs
@@ -166,8 +167,10 @@ class Verifier:
         required = ours_calls | theirs_calls
         if not required:
             return 0, 0
-        total = min(self.property_tests, len(required))
-        passed = sum(1 for name in list(required)[:total] if name in resolved_calls)
+        # Sort for deterministic test selection (set iteration order is undefined).
+        ordered = sorted(required)
+        total = min(self.property_tests, len(ordered))
+        passed = sum(1 for name in ordered[:total] if name in resolved_calls)
         return passed, total
 
     # -------------------------------------------------------------------------

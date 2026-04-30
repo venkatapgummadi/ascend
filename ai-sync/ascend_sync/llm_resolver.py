@@ -31,7 +31,7 @@ class Resolution:
     model: str
     confidence: float
     reasoning: str = ""
-    preserves_invariants: list[str] = None
+    preserves_invariants: list[str] | None = None
 
     def to_dict(self) -> dict:
         return {
