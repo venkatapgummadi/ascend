@@ -1,0 +1,48 @@
+{
+  "n_repositories": 12,
+  "weeks_baseline": 13,
+  "weeks_treatment": 13,
+  "alpha_corrected": 0.01,
+  "results": [
+    {
+      "metric": "crit_vuln_reduction",
+      "baseline_mean": 3.917,
+      "treatment_mean": 0.783,
+      "t": 24.858,
+      "p": 1.31e-11,
+      "cohens_d": 10.148
+    },
+    {
+      "metric": "mttd_reduction",
+      "baseline_mean": 18.85,
+      "treatment_mean": 11.31,
+      "t": 40.83,
+      "p": 3.31e-19,
+      "cohens_d": 16.669
+    },
+    {
+      "metric": "deploy_freq_increase",
+      "baseline_mean": 3.182,
+      "treatment_mean": 7.954,
+      "t": 58.025,
+      "p": 1.64e-18,
+      "cohens_d": 23.689
+    },
+    {
+      "metric": "failed_deploy_reduction",
+      "baseline_mean": 14.867,
+      "treatment_mean": 4.46,
+      "t": 63.557,
+      "p": 1.46e-17,
+      "cohens_d": 25.947
+    },
+    {
+      "metric": "ai_resolution_accuracy",
+      "baseline_mean": 0.0,
+      "treatment_mean": 92.0,
+      "t": Infinity,
+      "p": 0.0,
+      "cohens_d": NaN
+    }
+  ]
+}

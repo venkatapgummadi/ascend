@@ -17,7 +17,7 @@ A four-layer DevSecOps framework for teams shipping with AI coding assistants in
 
 [**View on GitHub →**](https://github.com/venkatapgummadi/ascend)
 &nbsp;
-[**Read the paper →**](https://github.com/venkatapgummadi/ascend/blob/main/docs/paper/ASCEND.pdf)
+[**About the paper →**](https://github.com/venkatapgummadi/ascend/blob/main/docs/paper/README.md)
 &nbsp;
 [**Quick start →**](#quick-start)
 

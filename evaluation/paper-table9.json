@@ -1,0 +1,14 @@
+{
+  "_note": "Verbatim Table IX of the ASCEND IEEE Access submission (April 2026). These are the numbers a reviewer should regenerate by running statistics.py against the real (NDA-protected) per-repository telemetry. The synthetic CSV bundled in this directory will NOT reproduce these numbers — see evaluation/README.md.",
+  "n_repositories": 12,
+  "weeks_baseline": 13,
+  "weeks_treatment": 13,
+  "alpha_corrected": 0.01,
+  "results": [
+    {"metric": "crit_vuln_reduction",      "t": 9.4,  "p": 0.001, "cohens_d": 2.72},
+    {"metric": "mttd_reduction",           "t": 7.8,  "p": 0.001, "cohens_d": 2.25},
+    {"metric": "deploy_freq_increase",     "t": 11.2, "p": 0.001, "cohens_d": 3.24},
+    {"metric": "failed_deploy_reduction",  "t": 6.9,  "p": 0.001, "cohens_d": 1.99},
+    {"metric": "ai_resolution_accuracy",   "t": 8.3,  "p": 0.001, "cohens_d": 2.40}
+  ]
+}

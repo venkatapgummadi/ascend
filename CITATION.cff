@@ -1,17 +1,32 @@
 cff-version: 1.2.0
 message: "If you use ASCEND in academic work, please cite it as follows."
 title: "ASCEND: A Comprehensive DevSecOps Framework for Automated Code Scanning, Multi-Track Deployment, and AI-Powered Post-Deployment Synchronization in Enterprise CI/CD"
+abstract: >-
+  ASCEND is a four-layer DevSecOps framework that integrates automated security
+  scanning into CI/CD pipelines with build-gating mechanisms, multi-track
+  deployment orchestration, and AI-powered post-deployment code synchronization.
+  The framework provides reference configurations across GitHub Actions, GitLab
+  CI/CD, Jenkins, and Azure DevOps with detailed integration patterns for SAST,
+  DAST, SCA, and IaC scanning. A novel AI synchronization layer employs
+  AST-based drift detection, ML conflict classification, and LLM-based conflict
+  resolution with formal verification. Empirical evaluation across 12 enterprise
+  repositories over six months demonstrates an 83.0% reduction in
+  pre-production critical vulnerabilities, a 43.5% decrease in mean time to
+  deployment, a 171.9% increase in deployment frequency, and 94.2% accuracy in
+  AI-assisted conflict resolution; all primary comparisons are statistically
+  significant (p < 0.001) with large effect sizes (Cohen's d > 2.0).
 type: software
 authors:
   - given-names: "Venkata Pavan Kumar"
     family-names: "Gummadi"
     email: "venkata.p.gummadi@ieee.org"
     orcid: "https://orcid.org/0009-0005-4435-0197"
-    affiliation: "IEEE Senior Member"
+    affiliation: "IEEE Senior Member, Professional Software Engineer"
 version: "0.1.0"
 date-released: "2026-04-21"
 license: MIT
 repository-code: "https://github.com/venkatapgummadi/ascend"
+url: "https://github.com/venkatapgummadi/ascend"
 keywords:
   - DevSecOps
   - CI/CD
@@ -21,7 +36,13 @@ keywords:
   - Infrastructure as Code
   - AI-powered code synchronization
   - Multi-track deployment
+  - Quality gates
+  - Merge conflict resolution
   - Security engineering
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.PENDING"
+    description: "Zenodo archive of the v0.1.0 source artefact (DOI pending registration before camera-ready submission)."
 preferred-citation:
   type: article
   title: "ASCEND: A Comprehensive DevSecOps Framework for Automated Code Scanning, Multi-Track Deployment, and AI-Powered Post-Deployment Synchronization in Enterprise CI/CD"
@@ -32,4 +53,9 @@ preferred-citation:
   year: 2026
   month: 4
   journal: "IEEE Access"
-  notes: "Preprint; manuscript under review at IEEE Access. Update this entry with the arXiv/TechRxiv DOI once the preprint is posted, and with the IEEE Access DOI, volume, and pages once the paper is accepted."
+  notes: >-
+    Manuscript under review at IEEE Access (submitted April 2026). The full
+    bibliography is in docs/paper/references.bib; broken citations identified
+    in the initial submission are tracked in docs/paper/REVIEWER_CHECKLIST.md.
+    Update this entry with the IEEE Access DOI, volume, and page numbers once
+    the paper is accepted.
