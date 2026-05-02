@@ -141,7 +141,7 @@ The right-most three rows (drift detection, conflict classification, conflict re
 \subsection{Overview}
 ASCEND is structured as four primary layers that are activated sequentially during CI/CD pipeline execution. Each layer implements automated scanning with a quality gate $G_i$ that enforces a binary pass/fail decision before code progresses to the next layer (Fig.~\ref{fig:arch}).
 
-\begin{figure}[!t]
+\begin{figure*}[!t]
 \centering
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.15}
@@ -168,7 +168,7 @@ ASCEND is structured as four primary layers that are activated sequentially duri
 \end{tabular}
 \caption{ASCEND four-layer architecture. Developer commits flow through four sequentially gated layers; failing builds are blocked at the corresponding quality gate (QG). The dashed arrow at L4 represents AI-driven back-propagation of production hotfixes to upstream branches.}
 \label{fig:arch}
-\end{figure}
+\end{figure*}
 
 
 
@@ -690,12 +690,21 @@ The ASCEND framework---platform configurations for all four CI/CD systems, the A
 \section*{Reproducibility Note}
 A reviewer-facing checklist that maps each citation key to its archival source, lists code-vs-paper alignment notes, and provides pre-resubmission verification commands is included in the open-source repository at \texttt{docs/\allowbreak paper/\allowbreak REVIEWER\_CHECKLIST.md}. The extended methodology document at \texttt{docs/\allowbreak paper/\allowbreak EVALUATION.md} provides the variable definitions, anonymization pipeline, and threats-to-validity expansion that did not fit within the page budget of this article.
 
+\section*{Acknowledgment}
+The author thanks the open-source maintainers of the scanning tools integrated into ASCEND---SonarQube, Semgrep, CodeQL, Snyk, Trivy, OWASP ZAP, Checkov, and TruffleHog---whose continued work makes a layered DevSecOps framework like this possible. The author also thanks the engineering and data-protection teams at the participating organizations for their data-sharing approval and operational cooperation throughout the 26-week study, and the anonymous IEEE Access reviewers for their constructive feedback that strengthened the contribution and methodology sections of this article.
+
 \sloppy\emergencystretch=3em
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 
 \begin{IEEEbiographynophoto}{Venkata Pavan Kumar Gummadi}
-(Senior Member, IEEE) is a Professional Software Engineer with more than 18 years of experience in DevSecOps, enterprise integration, and AI-driven automation. His research interests include continuous-integration security architecture, multi-track deployment orchestration, and the integration of large-language-model-based reasoning with traditional software-engineering pipelines. He is the author of the AgentFlow and ASCEND frameworks. He holds an ORCID iD of 0009-0005-4435-0197 and can be reached at \texttt{venkata.p.gummadi@ieee.org}.
+(Senior Member, IEEE) is a Professional Software Engineer with more than 18 years of experience in the design, integration, and operation of large-scale enterprise software systems. His professional work spans the architecture of high-velocity continuous-integration and continuous-deployment pipelines, the integration of automated security and compliance scanning into build-gated release workflows, and the application of machine learning and large-language-model techniques to long-standing software-engineering problems such as merge-conflict resolution, drift detection across deployment tracks, and automated remediation of regulated codebases.
+
+His current research focuses on closing the loop between automated security validation and AI-assisted code generation. Particular emphasis is placed on the formal verification of model-generated artifacts before they enter production code paths, the design of composable quality-gate models for heterogeneous scanner outputs, and the empirical evaluation of DevSecOps interventions in industrial settings using rigorous statistical methodology. He has contributed to the wider software-engineering community through reviewer service, open-source artifact releases under permissive licenses, and the publication of reference configurations for major continuous-integration platforms.
+
+He is the author of two open frameworks: AgentFlow, an orchestrator for multi-agent artificial-intelligence workflows, and ASCEND, the four-layer DevSecOps framework presented in this article. Both are released under the MIT license and are deposited as citable software artifacts on Zenodo to support reproducibility and community adoption.
+
+Mr.\ Gummadi is a Senior Member of the IEEE and an active participant in the professional software-engineering community. He holds the ORCID identifier 0009-0005-4435-0197 and can be reached at \texttt{venkata.p.gummadi@ieee.org}.
 \end{IEEEbiographynophoto}
 
 \EOD
