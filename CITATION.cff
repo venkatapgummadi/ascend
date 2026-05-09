@@ -42,7 +42,7 @@ keywords:
 identifiers:
   - type: doi
     value: "10.5281/zenodo.19918779"
-    description: "Zenodo archive of the v0.1.0 source artefact (DOI pending registration before camera-ready submission)."
+    description: "Zenodo deposit of the v1.0 source artefact released alongside the IEEE Access submission."
 preferred-citation:
   type: article
   title: "ASCEND: A Comprehensive DevSecOps Framework for Automated Code Scanning, Multi-Track Deployment, and AI-Powered Post-Deployment Synchronization in Enterprise CI/CD"

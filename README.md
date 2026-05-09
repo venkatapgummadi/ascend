@@ -2,7 +2,7 @@
 
 **A**utomated **S**canning, **C**ompliance **EN**forcement, and **D**eployment
 
-A comprehensive four-layer DevSecOps framework that integrates automated security scanning directly into CI/CD pipelines with build-gating mechanisms, multi-track deployment orchestration, and AI-powered post-deployment code synchronization.
+A four-layer DevSecOps framework that integrates automated security scanning directly into CI/CD pipelines with build-gating mechanisms, multi-track deployment orchestration, and AI-powered post-deployment code synchronization.
 
 [![CI](https://github.com/venkatapgummadi/ascend/actions/workflows/test.yml/badge.svg)](https://github.com/venkatapgummadi/ascend/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
