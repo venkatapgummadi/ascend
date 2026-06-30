@@ -13,7 +13,7 @@ sast_benchmark:
   # CWE -> paper category mapping (edit to match the categories you report)
   category_map:
     Injection:        [89, 90, 943, 79, 78, 77]   # SQLi, LDAPi, XPathi, XSS, OS cmd
-    "Insecure config":[614, 311, 319, 756]
+    "Insecure config": [614, 311, 319, 756]
     Crypto:           [327, 328, 326, 330]
     "Auth/session":   [287, 384, 613, 522]
 
