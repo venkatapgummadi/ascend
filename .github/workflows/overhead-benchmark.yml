@@ -1,0 +1,70 @@
+name: Scanning overhead
+
+# Reproduces the per-layer overhead numbers of the CARS paper: median and P95
+# added CI wall-clock for each scanning layer on a sample app. Only installed
+# tools are timed; missing tools are reported as skipped (no invented numbers).
+# Run from the Actions tab (workflow_dispatch); prints results + uploads JSON.
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: "Repetitions per layer (median/P95 over these)"
+        required: true
+        default: "5"
+
+permissions:
+  contents: read
+
+jobs:
+  overhead:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ASCEND
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install harness deps
+        run: pip install -r benchmark/requirements.txt
+
+      # ---- L1 tools: SAST + SCA + secrets ----
+      - name: Install Semgrep, Bandit (pip)
+        run: python -m pip install semgrep bandit
+
+      - name: Install gitleaks
+        run: |
+          VER=8.18.4
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${VER}/gitleaks_${VER}_linux_x64.tar.gz" \
+            | tar -xz -C /usr/local/bin gitleaks
+          gitleaks version
+
+      # ---- L2 tools: container + IaC ----
+      - name: Install Checkov (pip)
+        run: python -m pip install checkov
+
+      - name: Install Trivy
+        run: |
+          curl -sSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+            | sh -s -- -b /usr/local/bin
+          trivy --version
+
+      - name: Run overhead benchmark
+        run: |
+          cd benchmark
+          python run_overhead.py --app ../examples/sample-python-app \
+            --runs "${{ github.event.inputs.runs }}" --out results/overhead.json
+          echo ""
+          echo "==================== Overhead — paste into ASCEND_CARS2026.tex ===================="
+          python gen_latex.py results/overhead.json
+          echo "================================================================================="
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: overhead-results
+          path: benchmark/results/overhead.json
