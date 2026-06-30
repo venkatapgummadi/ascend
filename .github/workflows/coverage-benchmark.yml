@@ -1,0 +1,108 @@
+name: Detection coverage (OWASP Benchmark)
+
+# Reproduces Table II of the CARS paper: per-category true-positive rate of
+# single-tool vs. multi-tool SAST on the labeled OWASP Benchmark, plus the
+# marginal value of each added tool. Everything here is public; nothing depends
+# on private telemetry. Run it from the Actions tab (workflow_dispatch); it
+# prints paste-ready LaTeX rows and uploads coverage.json + the raw SARIF.
+
+on:
+  workflow_dispatch:
+    inputs:
+      benchmark_ref:
+        description: "OWASP BenchmarkJava git ref (branch, tag, or commit SHA)"
+        required: true
+        default: "master"
+
+permissions:
+  contents: read
+  security-events: write   # required by github/codeql-action
+  actions: read
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ASCEND
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install harness deps
+        run: pip install -r benchmark/requirements.txt
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Clone OWASP BenchmarkJava (pinned by recorded SHA)
+        run: |
+          git clone https://github.com/OWASP-Benchmark/BenchmarkJava.git owasp
+          cd owasp
+          git checkout "${{ github.event.inputs.benchmark_ref }}"
+          echo "OWASP_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "Pinned OWASP BenchmarkJava commit: $(git rev-parse HEAD)"
+
+      # ---------------- Semgrep ----------------
+      - name: Semgrep scan -> SARIF
+        run: |
+          python -m pip install semgrep
+          mkdir -p sg
+          # OWASP Top-Ten + Java security rules; registry fetch works in CI.
+          semgrep scan --metrics off \
+            --config p/owasp-top-ten --config p/java \
+            --sarif --output sg/semgrep.sarif owasp/src
+
+      # ---------------- CodeQL ----------------
+      # continue-on-error so a CodeQL build hiccup still yields the Semgrep column.
+      - name: CodeQL init
+        uses: github/codeql-action/init@v3
+        continue-on-error: true
+        with:
+          languages: java
+
+      - name: CodeQL autobuild
+        uses: github/codeql-action/autobuild@v3
+        continue-on-error: true
+
+      - name: CodeQL analyze -> SARIF (no upload)
+        uses: github/codeql-action/analyze@v3
+        continue-on-error: true
+        with:
+          output: cql
+          upload: false
+
+      # ---------------- Join + compute ----------------
+      - name: Assemble SARIF dir
+        run: |
+          mkdir -p sarif
+          cp sg/*.sarif sarif/ 2>/dev/null || true
+          # CodeQL writes <language>.sarif (e.g. java.sarif) into ./cql
+          cp cql/*.sarif sarif/ 2>/dev/null || true
+          echo "SARIF files going into coverage:"
+          ls -la sarif
+
+      - name: Compute coverage + emit LaTeX rows
+        run: |
+          cd benchmark
+          python run_coverage.py --benchmark ../owasp --sarif-dir ../sarif \
+            --out results/coverage.json
+          echo ""
+          echo "==================== Table II — paste into ASCEND_CARS2026.tex ===================="
+          python gen_latex.py results/coverage.json
+          echo "=================================================================================="
+          echo "OWASP BenchmarkJava commit (cite in camera-ready): $OWASP_SHA"
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-results
+          path: |
+            benchmark/results/coverage.json
+            sarif/*.sarif
