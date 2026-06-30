@@ -92,25 +92,48 @@ Push a commit to your feature branch. ASCEND will execute Layer 1 scanning immed
 
 ---
 
-## Reproducing the paper's results
+## Reproducing the results
 
-The IEEE Access submission (`docs/paper/`) makes specific empirical claims (83.0% critical-vuln reduction, 43.5% MTTD improvement, 94.2% AI conflict-resolution accuracy, all at p < 0.001 with d > 2.0). The reproduction harness lives in [`evaluation/`](./evaluation/) and is wired into the root `Makefile`.
+ASCEND's evaluation is designed to be reproducible from **public inputs only**.
+The harness in [`benchmark/`](./benchmark/) regenerates every number reported in the
+paper; there is no private or NDA-gated data in the loop.
 
 ```bash
-# Full reproduction pass (install, test, lint, eval, stats)
-make repro
+cd benchmark
+pip install -r requirements.txt
 
-# Or step-by-step:
-make install    # editable install + dev extras
-make test       # pytest (25 tests)
-make lint       # ruff
-make eval       # conflict-fixtures benchmark, asserts heuristic baseline
-make stats      # Welch t-test + Cohen's d on aggregate-metrics.csv
+# 1) Detection coverage on the labeled OWASP Benchmark (real TP rates)
+python run_coverage.py --benchmark ./_data/owasp-benchmark \
+                       --sarif-dir ./_data/sarif --out results/coverage.json
+
+# 2) Conflict-resolution metrics on the public conflict fixtures
+python run_sync.py --fixtures ../examples/conflict-fixtures \
+                   --tau 0.85 --bootstrap 10000 --out results/sync.json
+
+# 3) Per-layer scanning overhead on the sample apps
+python run_overhead.py --app ../examples/sample-python-app \
+                       --runs 5 --out results/overhead.json
+
+# 4) Emit LaTeX rows for the paper tables
+python gen_latex.py results/*.json
 ```
 
-The `make eval` target asserts the heuristic conflict classifier still achieves a 71% baseline on the bundled fixtures. The `make stats` target runs the analysis pipeline against a synthetic schema-demonstration CSV; reproducing the paper's actual Table IX numbers requires the NDA-protected per-repository telemetry as documented in [`evaluation/README.md`](./evaluation/README.md) and [`docs/paper/EVALUATION.md`](./docs/paper/EVALUATION.md).
+What the harness measures and how to read it:
 
-For the full reviewer-facing reproducibility paper trail, see [`docs/paper/REVIEWER_CHECKLIST.md`](./docs/paper/REVIEWER_CHECKLIST.md).
+- **Detection coverage** is computed against the OWASP Benchmark's labeled
+  ground truth, so single-tool vs. multi-tool true-positive rates and the
+  marginal value of each added tool are directly verifiable.
+- **Conflict resolution** is reported as an **auto-resolve rate** and a
+  **conditional accept-rate** — the latter applies only to the subset the system
+  chooses to auto-resolve, and is *not* a general accuracy figure. Accept-rate
+  comes with a 95% bootstrap confidence interval and a per-type breakdown.
+- **Overhead** is wall-clock time per scanning layer (median and P95); only
+  installed tools are timed.
+
+We deliberately do **not** claim a multi-organization field study. Earlier drafts
+reported pre/post metrics from private repositories; those claims are withdrawn
+because they cannot be independently reproduced, and the project now reports only
+public-benchmark results.
 
 ---
 
@@ -203,20 +226,24 @@ Working sample applications with ASCEND pre-integrated — see [`examples/`](./e
 
 ---
 
-## Research Paper
+## Research paper
 
-ASCEND is described in detail in the accompanying research paper. The paper presents the formal quality gate definitions, the AI synchronization algorithms, and an empirical evaluation of framework effectiveness.
+ASCEND is described in a working manuscript that presents the four-layer
+architecture, the composite quality-gate rule, and the verification-gated
+synchronization loop, evaluated on the public benchmark above.
+
+> **Status:** preprint / under submission. Not yet peer-reviewed or accepted.
+> Cite the archived software release (below) for reproducibility.
 
 **Citation:**
 
 ```bibtex
 @misc{gummadi2026ascend,
-  title  = {ASCEND: A Comprehensive DevSecOps Framework for Automated Code Scanning,
-            Multi-Track Deployment, and AI-Powered Post-Deployment Synchronization
-            in Enterprise CI/CD},
+  title  = {ASCEND: A Verification-Gated DevSecOps Framework with
+            AI-Assisted Synchronization},
   author = {Gummadi, Venkata Pavan Kumar},
   year   = {2026},
-  note   = {Preprint; manuscript under review at IEEE Access}
+  note   = {Preprint; under submission. Evaluated on a public benchmark.}
 }
 ```
 

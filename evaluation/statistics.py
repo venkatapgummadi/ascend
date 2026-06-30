@@ -1,10 +1,14 @@
-"""Reproduce Table IX of the ASCEND IEEE Access submission.
+"""SUPERSEDED — analysis script for the withdrawn pre/post field study.
 
-Reads `aggregate-metrics.csv`, runs Welch's t-test + Cohen's d on the five
-primary outcome variables, and emits a `results.json` whose numbers should
-match `expected-results.json` byte-for-byte.
+This script computed Welch's t-test + Cohen's d for the multi-organization
+field study that has been **withdrawn** (it relied on private, non-releasable
+per-repository telemetry and could not be independently reproduced). It is kept
+only as a historical record and is no longer wired into `make repro`.
 
-Usage:
+The current, reproducible evaluation runs entirely on public inputs — see
+`../benchmark/` and `evaluation/README.md`.
+
+Usage (historical):
     python statistics.py --input aggregate-metrics.csv --output results.json
 """
 

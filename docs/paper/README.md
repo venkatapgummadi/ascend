@@ -1,37 +1,33 @@
-# Research Paper
+# ASCEND — paper
 
-This directory holds the metadata, bibliography, and reviewer-facing materials for the ASCEND IEEE Access submission.
+## Current manuscript (active)
 
-## Files in this directory
+**Title:** ASCEND: A Verification-Gated DevSecOps Framework with AI-Assisted
+Synchronization
 
-| File | Purpose |
-|------|---------|
-| `README.md` | This file. |
-| `references.bib` | BibTeX for every citation in the paper, including resolutions for the unresolved `[?]` placeholders in the April 2026 submission. |
-| `REVIEWER_CHECKLIST.md` | Pre-resubmission checklist mapping each `[?]` to its key, plus code-vs-paper alignment notes and verification commands. |
-| `EVALUATION.md` | Extended methodology document for §VIII (variables, anonymisation pipeline, statistical procedure, threats to validity). |
+**Status:** preprint / under submission to a peer-reviewed venue. Not yet accepted.
 
-## Files NOT in this directory
+This version scopes all empirical claims to the **public benchmark** in
+[`../../benchmark/`](../../benchmark/): detection coverage on the labeled OWASP
+Benchmark, conflict-resolution metrics on the public `examples/conflict-fixtures/`
+(auto-resolve rate plus a **conditional** accept-rate), and per-layer scanning
+overhead on the sample apps. Every number is regenerable with `make repro`.
 
-The compiled PDF (`ASCEND.pdf`), LaTeX source (`main.tex`), IEEE document class (`IEEEtran.cls`), and author bio photo are kept in the author's manuscript repository rather than this open-source artefact repo. This is intentional:
+The source for this version is maintained outside the repo until acceptance; on
+acceptance, the camera-ready and DOI will be added here and to `CITATION.cff`.
 
-- The IEEE document class is redistributable but adds noise to the artefact.
-- The PDF is a build product; pinning a specific compiled version inside the source-of-truth artefact creates drift each time the manuscript is revised.
-- The bio photo is an identity artefact and is not needed for reproduction.
+## Superseded manuscript (withdrawn — kept for history only)
 
-If you are a reviewer who needs the LaTeX source or compiled PDF before formal acceptance, please contact the corresponding author at `venkata.p.gummadi@ieee.org`. Once the paper is accepted, the camera-ready PDF will be linked from the repository top-level README via its IEEE Access DOI.
+An earlier manuscript titled *"ASCEND: A Comprehensive DevSecOps Framework for
+Automated Code Scanning, Multi-Track Deployment, and AI-Powered Post-Deployment
+Synchronization in Enterprise CI/CD"* reported a 26-week pre/post study across
+twelve repositories from three organizations (e.g., 83.0% critical-vuln reduction,
+43.5% MTTD improvement, 94.2% conflict-resolution accuracy at p<0.001, d>2.0).
 
-## Citation
+**Those results are withdrawn.** The study relied on private, non-releasable
+per-repository telemetry and could not be independently reproduced; peer review
+correctly identified it as underpowered, uncontrolled, and conflicted. Do not cite
+those figures. The files `EVALUATION.md` and `REVIEWER_CHECKLIST.md` in this folder
+pertain to the withdrawn manuscript and are retained only as historical record.
 
-See [`../../CITATION.cff`](../../CITATION.cff) at the repository root for the canonical citation metadata in CFF format.
-
-## Status
-
-| Item | State |
-|------|-------|
-| Manuscript | Under review at IEEE Access (submitted April 2026) |
-| Bibliography | Resolved — see `references.bib` and `REVIEWER_CHECKLIST.md` |
-| Reproducibility harness | Implemented at `evaluation/` and `examples/conflict-fixtures/` |
-| ORCID | 0009-0005-4435-0197 |
-| Zenodo DOI | Pending; will be minted before camera-ready submission |
-| Author photo | IEEE bio spec (1in × 1.25in @ 300 DPI), kept in manuscript repo |
+If you are evaluating ASCEND, use the current manuscript and the public benchmark.

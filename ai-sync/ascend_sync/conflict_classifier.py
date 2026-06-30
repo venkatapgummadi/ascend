@@ -107,7 +107,7 @@ class ConflictClassifier:
 
     Categorises a three-way merge conflict (ours, theirs, base) into
     {syntactic, semantic, structural, configuration} as defined in
-    IEEE Access §VII.B.
+    the ASCEND manuscript §VII.B.
 
     The shipped baseline is a heuristic (rule-based) classifier whose
     confidence values (0.97 / 0.92 / 0.82 / 0.78 / 0.65 / 0.80 / 0.60)

@@ -1,5 +1,12 @@
 # ASCEND — Experimental Evaluation Methodology
 
+> **⚠️ SUPERSEDED / WITHDRAWN.** This document describes the multi-organization
+> pre/post field study that has been **withdrawn** — it relied on private,
+> non-releasable telemetry and could not be independently reproduced. It is
+> retained only as a historical record. For the current, public-benchmark
+> evaluation see [`../../benchmark/`](../../benchmark/), [`README.md`](./README.md),
+> and [`../../evaluation/README.md`](../../evaluation/README.md).
+
 > Companion to §VIII "Experimental Evaluation" of the ASCEND IEEE Access submission. This document is intended for reviewers and replicators who need methodological detail beyond what fits in a 10-page paper.
 
 ## 1. Study design at a glance

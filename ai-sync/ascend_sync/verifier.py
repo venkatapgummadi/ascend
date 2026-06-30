@@ -71,7 +71,7 @@ class Verifier:
     Verifies that a candidate resolution is syntactically valid and
     preserves critical behavioural invariants.
 
-    Implements the validity predicate of IEEE Access Eq. (5):
+    Implements the validity predicate of the ASCEND manuscript Eq. (5):
 
         Valid(r) = forall x in X : f_merged(x; r) ≡ f_expected(x).
 

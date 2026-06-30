@@ -54,7 +54,7 @@ class DriftDetector:
     """
     Detects semantic drift between two code states.
 
-    Implements the drift signal described in IEEE Access §VII.A:
+    Implements the drift signal described in the ASCEND manuscript §VII.A:
 
         r = w_sem · sem_norm + w_cfg · cfg_norm + w_emb · emb_norm,
         triggered when r > theta.

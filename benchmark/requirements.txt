@@ -1,0 +1,5 @@
+# Core harness deps (stdlib does most of the work)
+PyYAML>=6.0
+numpy>=1.24
+# Scanners are installed separately (semgrep, checkov, bandit, trivy, gitleaks).
+# CodeQL/SonarQube are optional; see ground_truth_rules.md.

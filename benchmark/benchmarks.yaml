@@ -1,0 +1,49 @@
+# Public inputs for the ASCEND benchmark. Everything here is public and pinnable.
+# Pin commit hashes before you run so the paper's numbers are reproducible.
+
+# --- Labeled SAST benchmark for detection coverage (Table II) ---
+# OWASP Benchmark ships an "expectedresults-1.2.csv" mapping each test case to
+# a CWE and a true/false vulnerability label. We compute per-category TP rate
+# against this ground truth.
+sast_benchmark:
+  name: OWASP Benchmark
+  repo: https://github.com/OWASP-Benchmark/BenchmarkJava
+  commit: "PIN_ME"                      # e.g. a tagged release commit
+  expected_results: expectedresults-1.2.csv
+  # CWE -> paper category mapping (edit to match the categories you report)
+  category_map:
+    Injection:        [89, 90, 943, 79, 78, 77]   # SQLi, LDAPi, XPathi, XSS, OS cmd
+    "Insecure config":[614, 311, 319, 756]
+    Crypto:           [327, 328, 326, 330]
+    "Auth/session":   [287, 384, 613, 522]
+
+# Optional: additional labeled suites you can add as adapters
+#   - Juliet / SARD (C/C++/Java), securibench-micro (Java)
+
+# --- Public OSS repos for OVERHEAD measurement (not for TP rate) ---
+# These are only used to time scanner layers on real code. Pin commits.
+overhead_repos:
+  - name: flask-restx
+    url: https://github.com/python-restx/flask-restx
+    commit: "PIN_ME"
+    lang: python
+  - name: express-example
+    url: https://github.com/expressjs/express
+    commit: "PIN_ME"
+    lang: node
+  - name: terraform-aws-vpc
+    url: https://github.com/terraform-aws-modules/terraform-aws-vpc
+    commit: "PIN_ME"
+    lang: iac
+
+# --- Merge-conflict evaluation inputs (Synchronization) ---
+sync_inputs:
+  # The repo's own public fixtures (ground-truth resolutions included)
+  fixtures_dir: "../examples/conflict-fixtures"   # adjust to your local clone
+  # Optional: public repos to MINE real conflicts from (disjoint from any
+  # training corpus). Conflicts are reconstructed deterministically from history.
+  mined_repos:
+    - url: https://github.com/pallets/flask
+      commit_range: "PIN_FROM..PIN_TO"
+  # If you train the classifier, name a PUBLIC corpus disjoint from the above:
+  training_corpus: "NAME_A_PUBLIC_CORPUS (e.g., a published merge-conflict dataset)"

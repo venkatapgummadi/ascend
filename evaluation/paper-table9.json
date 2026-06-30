@@ -1,5 +1,6 @@
 {
-  "_note": "Verbatim Table IX of the ASCEND IEEE Access submission (April 2026). These are the numbers a reviewer should regenerate by running statistics.py against the real (NDA-protected) per-repository telemetry. The synthetic CSV bundled in this directory will NOT reproduce these numbers — see evaluation/README.md.",
+  "_note": "WITHDRAWN — do not cite. These are the Table IX values from the withdrawn pre/post field study, retained only as a historical record. The study relied on private, non-releasable per-repository telemetry and could not be independently reproduced. The project's current claims are scoped to the public benchmark in ../benchmark/ — see evaluation/README.md.",
+  "_status": "withdrawn",
   "n_repositories": 12,
   "weeks_baseline": 13,
   "weeks_treatment": 13,

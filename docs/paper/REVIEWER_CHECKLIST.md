@@ -1,5 +1,10 @@
 # IEEE Access — Pre-Resubmission Checklist
 
+> **⚠️ SUPERSEDED / WITHDRAWN.** This checklist pertains to the withdrawn
+> IEEE Access field-study manuscript and is retained only as a historical record.
+> The project's claims are now scoped to the public benchmark — see
+> [`README.md`](./README.md) and [`../../benchmark/`](../../benchmark/).
+
 This document is for the manuscript author. It maps every reviewer-blocking issue identified in the April 2026 submitted PDF to its resolution and tells you what to change in the LaTeX source before resubmission.
 
 > **Reviewer-blocker summary:** the submitted PDF contains 12+ unresolved `\cite{?}` references rendered as `[?]`. IEEE Access editorial staff routinely return papers with broken citations without sending them to reviewers. Fix this first, no matter what else you do.

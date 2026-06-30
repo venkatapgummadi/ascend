@@ -8,6 +8,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the
 
 ### Added
 
+- Public reproduction benchmark under `benchmark/` — the harness that regenerates
+  every number in the current manuscript from **public inputs only** (no private
+  or NDA-gated data): `run_coverage.py` (detection coverage on the labeled OWASP
+  Benchmark), `run_sync.py` (conflict-resolution auto-resolve rate + conditional
+  accept-rate with a 95% bootstrap CI), `run_overhead.py` (per-layer scanning
+  overhead), `gen_latex.py`, `benchmarks.yaml`, and `ground_truth_rules.md`.
 - IEEE Access reviewer-facing infrastructure under `docs/paper/`:
   - `references.bib` — complete BibTeX for all 20 numbered citations plus 14 resolutions for the unresolved `[?]` placeholders in the initial submission.
   - `REVIEWER_CHECKLIST.md` — `[?]`-to-key mapping, code-vs-paper alignment table, and pre-resubmission verification commands.
@@ -17,18 +23,36 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the
   - `aggregate-metrics.csv` — synthetic schema-demonstration CSV (clearly labelled).
   - `expected-synthetic-output.json` — CI assertion target for the analyser against the synthetic input.
   - `paper-table9.json` — verbatim record of the paper's reported Table IX values.
-- Top-level `Makefile` with `install`, `test`, `lint`, `eval`, `stats`, `repro`, `clean` targets.
+- Top-level `Makefile` with `install`, `test`, `lint`, `eval`, `repro`, `clean` targets (the `eval`/`repro` targets now drive the public `benchmark/` harness).
 - New tests covering `LLMResolver` (local stub, unknown provider, confidence heuristic, mocked OpenAI failure path), additional `Verifier` cases (determinism regression, empty resolution, JSON round-trip), `DriftDetector` JSON serialisation, explanation text, and threshold boundary, full `PROrchestrator` coverage (PR-body construction, headers, mocked HTTP), and CLI smoke tests via `click.testing.CliRunner`. Suite size grew from 12 to 40, line coverage 83%.
 - Coverage floor of 70% enforced via `--cov-fail-under=70` in `ai-sync/pyproject.toml`.
 - Bandit self-scan job in `.github/workflows/test.yml`; required to be clean.
 - Reproducibility-harness CI job runs `examples/conflict-fixtures/run_fixtures.py --check` and bit-exact-diffs `evaluation/statistics.py` output against `expected-synthetic-output.json`.
-- IEEE Access §VII cross-reference docstrings on `DriftDetector`, `ConflictClassifier`, `Verifier`, and `LLMResolver`, naming the equation each class implements.
+- Manuscript §VII cross-reference docstrings on `DriftDetector`, `ConflictClassifier`, `Verifier`, and `LLMResolver`, naming the equation each class implements.
 - Real-world case study `docs/case-study-ai-cve-dependency.md` covering an AI-suggested dependency downgrade reintroducing CVE-2024-1135 (gunicorn) and CVE-2022-23529 (jsonwebtoken).
 
 ### Changed
 
-- `CITATION.cff` now includes the paper abstract, an explicit `identifiers` block with a Zenodo DOI placeholder, and a `url` field. Reviewers can ingest it without modification.
-- README: added a "Reproducing the paper's results" section, fixed broken `docs/paper/ASCEND.pdf` links to point to `docs/paper/README.md`, and corrected the repository-structure tree to match the actual flat `quality-gates/` layout.
+- **Scoped all empirical claims to the public `benchmark/`.** The multi-organization
+  pre/post field study (e.g. 83.0% critical-vuln reduction, 43.5% MTTD improvement,
+  94.2% conflict-resolution accuracy at p<0.001, d>2.0) is **withdrawn** — it relied
+  on private, non-releasable per-repository telemetry and could not be independently
+  reproduced. README, `CITATION.cff`, `evaluation/README.md`, `docs/paper/README.md`,
+  and the `Makefile` now describe only public-benchmark results. The IEEE Access
+  manuscript and its reviewer materials (`docs/paper/EVALUATION.md`,
+  `REVIEWER_CHECKLIST.md`, `manuscript/`) are retained, marked **superseded**.
+- `CITATION.cff` retitled to *"ASCEND: A Verification-Gated DevSecOps Framework with
+  AI-Assisted Synchronization"*, citing the archived software release rather than a
+  manuscript under review.
+- README: replaced the "Reproducing the paper's results" and "Research Paper"
+  sections to point at `benchmark/` and a preprint-under-submission status.
+
+### Removed
+
+- `make stats` — the Welch t-test on a synthetic schema-demonstration CSV and the
+  field-study reproduction that required private per-repository telemetry. Those
+  claims are withdrawn; `evaluation/statistics.py` and `paper-table9.json` are kept
+  only as a historical record and are no longer wired into `make repro`.
 
 ### Fixed
 

@@ -70,7 +70,12 @@ jobs:
         run: |
           PYTHONPATH=ai-sync python examples/conflict-fixtures/run_fixtures.py \
             --quiet --check examples/conflict-fixtures/expected-results.json
-      - name: Statistics pipeline — bit-exact reproduction
+      - name: Legacy synthetic-stats self-consistency check (withdrawn field study)
+        # The pre/post field study is WITHDRAWN; statistics.py and its synthetic
+        # CSV are retained only as a historical record. This step merely asserts the
+        # analyser is still deterministic on its synthetic input — it does NOT
+        # reproduce any reported result. The reproducible evaluation is the public
+        # benchmark in benchmark/ and the conflict-fixtures check above.
         working-directory: evaluation
         run: |
           python statistics.py --input aggregate-metrics.csv --output out.json

@@ -48,7 +48,7 @@ class LLMResolver:
     """
     LLM-backed resolver that generates candidate resolutions.
 
-    Implements the candidate-generation step of IEEE Access Eq. (4):
+    Implements the candidate-generation step of the ASCEND manuscript Eq. (4):
 
         r* = argmax_{r in R} P(r | c_ours, c_theirs, c_base, H),
 
