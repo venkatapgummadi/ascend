@@ -1,0 +1,70 @@
+{
+  "benchmark": "OWASP Benchmark",
+  "tools": [
+    "java",
+    "semgrep"
+  ],
+  "per_tool": {
+    "semgrep": {
+      "Crypto": [
+        45.911949685534594,
+        219,
+        477
+      ],
+      "Injection": [
+        85.54396423248882,
+        574,
+        671
+      ],
+      "Insecure config": [
+        0.0,
+        0,
+        36
+      ]
+    },
+    "java": {
+      "Crypto": [
+        92.45283018867924,
+        441,
+        477
+      ],
+      "Injection": [
+        100.0,
+        671,
+        671
+      ],
+      "Insecure config": [
+        100.0,
+        36,
+        36
+      ]
+    }
+  },
+  "combined": {
+    "Crypto": [
+      98.11320754716981,
+      468,
+      477
+    ],
+    "Injection": [
+      100.0,
+      671,
+      671
+    ],
+    "Insecure config": [
+      100.0,
+      36,
+      36
+    ]
+  },
+  "marginal": [
+    {
+      "after_adding": "java",
+      "overall_tp_pct": 97.0
+    },
+    {
+      "after_adding": "semgrep",
+      "overall_tp_pct": 99.2
+    }
+  ]
+}

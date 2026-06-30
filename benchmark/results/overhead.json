@@ -1,0 +1,22 @@
+{
+  "app": "../examples/sample-python-app",
+  "runs": 5,
+  "per_layer": {
+    "L1": {
+      "runs": 5,
+      "median_min": 0.06,
+      "p95_min": 0.07,
+      "skipped_tools": []
+    },
+    "L2": {
+      "runs": 5,
+      "median_min": 0.05,
+      "p95_min": 0.14,
+      "skipped_tools": []
+    }
+  },
+  "cumulative_median_min": {
+    "L1": 0.06,
+    "L2": 0.11
+  }
+}

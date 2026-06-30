@@ -1,1 +1,9 @@
-{"_note": "Placeholder from a smoke test with dummy fixtures. Real results overwrite this when you run run_sync.py / run_coverage.py / run_overhead.py on the public benchmark inputs. Do NOT cite this file."}
+{
+  "_note": "run_sync.py (resolution accept-rate) is NOT yet runnable: the public conflict-fixtures are labeled by conflict TYPE only, not with ground-truth merged resolutions, so the loader finds no usable fixtures. The current synchronization result is the conflict-TYPE classification baseline produced by examples/conflict-fixtures/run_fixtures.py and asserted against examples/conflict-fixtures/expected-results.json.",
+  "metric": "conflict-type-classification (heuristic baseline)",
+  "n_fixtures": 7,
+  "hits": 5,
+  "accuracy": 0.7143,
+  "per_class": {"configuration": "2/2", "semantic": "2/2", "syntactic": "1/2", "structural": "0/1"},
+  "blocked": "resolution accept-rate awaits resolution-labeled fixtures (see benchmark/README.md and the paper's future work)"
+}
