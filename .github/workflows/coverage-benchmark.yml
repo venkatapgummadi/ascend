@@ -61,17 +61,17 @@ jobs:
       # ---------------- CodeQL ----------------
       # continue-on-error so a CodeQL build hiccup still yields the Semgrep column.
       - name: CodeQL init
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         continue-on-error: true
         with:
           languages: java
 
       - name: CodeQL autobuild
-        uses: github/codeql-action/autobuild@v3
+        uses: github/codeql-action/autobuild@v4
         continue-on-error: true
 
       - name: CodeQL analyze -> SARIF (no upload)
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         continue-on-error: true
         with:
           output: cql
