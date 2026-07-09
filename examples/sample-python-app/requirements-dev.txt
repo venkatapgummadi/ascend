@@ -2,7 +2,7 @@
 
 # Test
 pytest==8.3.3
-pytest-cov==5.0.0
+pytest-cov==7.1.0
 
 # Lint / format
 ruff==0.7.1
