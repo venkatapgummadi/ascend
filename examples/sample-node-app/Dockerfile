@@ -3,7 +3,7 @@
 # minimal runtime dependencies.
 
 # ---------- Stage 1: builder ----------
-FROM node:20.18.0-alpine3.20@sha256:2bff48f72ecb9b5d5b87c8f2b87e2e0928068ba9db78cd5fef5e6f9f6b5c3b6b AS builder
+FROM node:24.1.0-alpine3.20@sha256:8fe019e0d57dbdce5f5c27c0b63d2775cf34b00e3755a7dea969802d7e0c2b25 AS builder
 
 WORKDIR /build
 
@@ -12,7 +12,7 @@ RUN npm ci --omit=dev --ignore-scripts \
  && npm cache clean --force
 
 # ---------- Stage 2: runtime ----------
-FROM node:20.18.0-alpine3.20@sha256:2bff48f72ecb9b5d5b87c8f2b87e2e0928068ba9db78cd5fef5e6f9f6b5c3b6b AS runtime
+FROM node:24.1.0-alpine3.20@sha256:8fe019e0d57dbdce5f5c27c0b63d2775cf34b00e3755a7dea969802d7e0c2b25 AS runtime
 
 # Non-root user
 RUN addgroup -S -g 10001 app \
