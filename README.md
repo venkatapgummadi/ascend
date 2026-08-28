@@ -228,26 +228,36 @@ Working sample applications with ASCEND pre-integrated — see [`examples/`](./e
 
 ## Research paper
 
-ASCEND is described in a working manuscript that presents the four-layer
-architecture, the composite quality-gate rule, and the verification-gated
-synchronization loop, evaluated on the public benchmark above.
+ASCEND is described in a paper that presents the four-layer architecture, the
+composite quality-gate rule, and the verification-gated synchronization loop,
+evaluated on the public benchmark above.
 
-> **Status:** preprint / under submission. Not yet peer-reviewed or accepted.
-> Cite the archived software release (below) for reproducibility.
+> **Status:** accepted at the IEEE Cyber Awareness and Research Symposium
+> (CARS) 2026. The accepted PDF is in
+> [`docs/paper/cars2026/`](./docs/paper/cars2026/).
 
 **Citation:**
 
 ```bibtex
-@misc{gummadi2026ascend,
-  title  = {ASCEND: A Verification-Gated DevSecOps Framework with
-            AI-Assisted Synchronization},
-  author = {Gummadi, Venkata Pavan Kumar},
-  year   = {2026},
-  note   = {Preprint; under submission. Evaluated on a public benchmark.}
+@inproceedings{gummadi2026ascend,
+  title     = {ASCEND: A Verification-Gated DevSecOps Framework with
+               AI-Assisted Synchronization},
+  author    = {Gummadi, Venkata Pavan Kumar},
+  booktitle = {IEEE Cyber Awareness and Research Symposium (CARS)},
+  year      = {2026}
 }
 ```
 
 See [`CITATION.cff`](./CITATION.cff) for additional citation formats.
+
+---
+
+## In the press
+
+- Venkata Pavan Kumar Gummadi, ["Why I built an open-source tool for the AI
+  coding era"](https://americanbazaaronline.com/2026/04/28/why-i-built-an-open-source-tool-for-the-ai-coding-era-479767/),
+  *The American Bazaar*, April 28, 2026 — background on why ASCEND verifies
+  AI-proposed changes before they reach production.
 
 ---
 
