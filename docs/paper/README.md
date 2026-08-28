@@ -5,7 +5,8 @@
 **Title:** ASCEND: A Verification-Gated DevSecOps Framework with AI-Assisted
 Synchronization
 
-**Status:** preprint / under submission to a peer-reviewed venue. Not yet accepted.
+**Status:** accepted at the IEEE Cyber Awareness and Research Symposium (CARS)
+2026. The accepted PDF is in [`cars2026/`](./cars2026/).
 
 This version scopes all empirical claims to the **public benchmark** in
 [`../../benchmark/`](../../benchmark/): detection coverage on the labeled OWASP
@@ -13,8 +14,8 @@ Benchmark, conflict-resolution metrics on the public `examples/conflict-fixtures
 (auto-resolve rate plus a **conditional** accept-rate), and per-layer scanning
 overhead on the sample apps. Every number is regenerable with `make repro`.
 
-The source for this version is maintained outside the repo until acceptance; on
-acceptance, the camera-ready and DOI will be added here and to `CITATION.cff`.
+The accepted PDF is in [`cars2026/`](./cars2026/); the proceedings DOI will be
+added here and to `CITATION.cff` once it is assigned.
 
 ## Superseded manuscript (withdrawn — kept for history only)
 

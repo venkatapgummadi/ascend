@@ -30,7 +30,15 @@ keywords:
   - merge-conflict resolution
   - property-based verification
   - LLM-assisted software engineering
-# NOTE: Do not add a "preferred-citation" claiming acceptance/publication of the
-# manuscript until it is actually accepted. When/if a venue accepts the paper,
-# add a preferred-citation entry of type: conference-paper or article with the
-# real DOI. Until then, the citable artifact is this software release.
+# The paper was accepted at IEEE CARS 2026. The DOI is added here once the
+# proceedings are published; until then this entry carries no DOI.
+preferred-citation:
+  type: conference-paper
+  title: "ASCEND: A Verification-Gated DevSecOps Framework with AI-Assisted Synchronization"
+  authors:
+    - family-names: Gummadi
+      given-names: Venkata Pavan Kumar
+      email: venkata.p.gummadi@ieee.org
+      orcid: "https://orcid.org/0009-0005-4435-0197"
+  collection-title: "IEEE Cyber Awareness and Research Symposium (CARS)"
+  year: 2026

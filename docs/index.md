@@ -75,7 +75,7 @@ ASCEND welcomes contributions from practitioners, researchers, and anyone runnin
 
 ## Cite this work
 
-If you use ASCEND in academic work, please cite using the metadata in [`CITATION.cff`](https://github.com/venkatapgummadi/ascend/blob/main/CITATION.cff). The associated paper is a preprint under submission (not yet peer-reviewed); its empirical claims are scoped to the public benchmark in the repository.
+If you use ASCEND in academic work, please cite using the metadata in [`CITATION.cff`](https://github.com/venkatapgummadi/ascend/blob/main/CITATION.cff). The associated paper was accepted at the IEEE Cyber Awareness and Research Symposium (CARS) 2026; its empirical claims are scoped to the public benchmark in the repository.
 
 ## License
 
