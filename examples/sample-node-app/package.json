@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "eslint": "^9.13.0",
-    "@eslint/js": "^9.13.0",
+    "@eslint/js": "^10.0.1",
     "supertest": "^7.0.0"
   },
   "author": "Venkata Pavan Kumar Gummadi",
