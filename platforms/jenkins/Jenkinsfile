@@ -150,7 +150,15 @@ pipeline {
 
         stage('Quality Gate 2') {
             steps {
-                echo "PASS: Quality Gate 2"
+                sh '''
+                    GATE="${ASCEND_GATE_SCRIPT:-scripts/severity_gate.py}"
+                    if [ ! -f "$GATE" ]; then
+                        echo "FAIL: $GATE is missing. Vendor scripts/severity_gate.py from the ASCEND repo."
+                        exit 1
+                    fi
+                    python3 "$GATE" --layer 2 --mode "${ASCEND_MODE:-enforce}" \
+                        --sarif trivy.sarif checkov.sarif --missing fail
+                '''
             }
         }
 

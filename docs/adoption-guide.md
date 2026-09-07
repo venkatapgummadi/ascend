@@ -8,14 +8,14 @@ ASCEND is designed for incremental adoption. This guide presents a phased rollou
 
 - You deploy to production at least weekly.
 - You operate multi-track branches (development / staging / production / hotfix).
-- You have an existing CI/CD platform (GitHub Actions / GitLab / Jenkins / Azure DevOps).
+- You have an existing CI/CD platform (GitHub Actions / GitLab / Jenkins / Azure DevOps / Bamboo).
 - You have regulatory or audit requirements (SOC 2, PCI DSS, HIPAA, NIST).
 - Your security review process is currently a manual / async bottleneck.
 
 **You may want to start smaller if:**
 
 - You have < 5 engineers and < 10 deploys per month — start with a single SAST tool first.
-- You use a CI platform not yet covered by reference configurations (CircleCI, TeamCity, Bamboo). You'll be writing the first platform reference; consider contributing it back.
+- You use a CI platform not yet covered by a full four-layer reference (CircleCI, TeamCity, Buildkite). Bamboo currently ships Layer 1 and Layer 2; a Layer 3/4 sketch would be a welcome follow-up.
 - You have no historical merge conflict data — Layer 4 model training needs at least 500 resolved conflicts.
 
 ## Phase 1 — Layer 1 (Week 1–2)

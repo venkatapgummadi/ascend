@@ -55,7 +55,7 @@ pip install -e ".[dev]"
 ascend-sync --help
 ```
 
-For platform-specific configurations (GitHub Actions, GitLab CI, Jenkins, Azure DevOps), see the [`platforms/`](https://github.com/venkatapgummadi/ascend/tree/main/platforms) directory.
+For platform-specific configurations (GitHub Actions, GitLab CI, Jenkins, Azure DevOps, Bamboo), see the [`platforms/`](https://github.com/venkatapgummadi/ascend/tree/main/platforms) directory.
 
 ## Documentation
 

@@ -6,7 +6,7 @@ This document describes the threat model for ASCEND itself — the risks introdu
 
 **In scope:**
 
-- ASCEND pipeline configurations (GitHub Actions / GitLab CI / Jenkinsfile / Azure DevOps).
+- ASCEND pipeline configurations (GitHub Actions / GitLab CI / Jenkinsfile / Azure DevOps / Bamboo).
 - The AI synchronization module (`ai-sync/`).
 - Quality gate configurations (`quality-gates/`).
 - Interactions with third-party scanning tools.

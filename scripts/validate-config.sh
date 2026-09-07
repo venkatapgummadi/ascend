@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # ASCEND — validate-config.sh
-# Quick sanity check for the four platform configurations. Run before committing.
+# Quick sanity check for the platform configurations. Run before committing.
 #
 # Usage: ./scripts/validate-config.sh
 
@@ -52,6 +52,9 @@ check "GitHub Actions"      platforms/github-actions/.github/workflows/ascend-fu
 check "GitLab CI/CD"        platforms/gitlab-ci/.gitlab-ci.yml
 check "Jenkins"             platforms/jenkins/Jenkinsfile
 check "Azure DevOps"        platforms/azure-devops/azure-pipelines.yml
+check "Bamboo Specs"        platforms/bamboo/bamboo.yaml
+check "Bamboo README"       platforms/bamboo/README.md
+check "Severity veto"       scripts/severity_gate.py
 
 echo
 echo "--- Quality gate configs ---"
@@ -60,6 +63,7 @@ check "Semgrep rules"       quality-gates/semgrep-rules.yml
 check "Checkov config"      quality-gates/checkov-config.yml
 check "ZAP rules"           quality-gates/zap-rules.tsv
 check "Trufflehog config"   quality-gates/trufflehog-config.yml
+check "Severity policy"     quality-gates/severity-policy.json
 
 echo
 echo "--- AI sync module ---"
@@ -85,7 +89,7 @@ if command -v python3 >/dev/null 2>&1; then
     python3 -c "
 import ast, pathlib, sys
 bad = []
-for p in pathlib.Path('ai-sync').rglob('*.py'):
+for p in list(pathlib.Path('ai-sync').rglob('*.py')) + list(pathlib.Path('scripts').glob('*.py')):
     try:
         ast.parse(p.read_text())
     except SyntaxError as e:

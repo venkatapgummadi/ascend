@@ -8,6 +8,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the
 
 ### Added
 
+- **Bamboo L1/L2 reference plan** under `platforms/bamboo/` (Specs YAML v2 plus agent-script fallback). Semgrep, Bandit, Gitleaks, Trivy, and Checkov feed a real severity veto instead of an echo-PASS gate.
+- `scripts/severity_gate.py` — stdlib SARIF / Semgrep / Bandit / Gitleaks aggregator with `--mode enforce|warning-only`, unit tests, and `quality-gates/severity-policy.json`.
+- Jenkins Quality Gate 2 now calls the same veto on `trivy.sarif` and `checkov.sarif` (it previously printed `PASS` unconditionally).
+
 - Public reproduction benchmark under `benchmark/` — the harness that regenerates
   every number in the current manuscript from **public inputs only** (no private
   or NDA-gated data): `run_coverage.py` (detection coverage on the labeled OWASP

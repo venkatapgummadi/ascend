@@ -43,7 +43,7 @@ Modern CI/CD pipelines prioritize velocity. ASCEND's thesis is that velocity and
 ### Key Contributions
 
 1. **Four-layer DevSecOps architecture** with formal quality gate definitions.
-2. **Platform reference configurations** for GitHub Actions, GitLab CI/CD, Jenkins, and Azure DevOps.
+2. **Platform reference configurations** for GitHub Actions, GitLab CI/CD, Jenkins, Azure DevOps, and Bamboo.
 3. **Multi-track deployment framework** supporting blue-green, canary, and rolling strategies with automated quality gates at each promotion boundary.
 4. **AI-powered synchronization system** using AST differencing, ML conflict classification, and LLM-based resolution with property-based verification.
 5. **Comprehensive scanning tool integration** covering SonarQube, Semgrep, CodeQL, Snyk, Trivy, OWASP ZAP, Checkov, and TruffleHog.
@@ -54,7 +54,7 @@ Modern CI/CD pipelines prioritize velocity. ASCEND's thesis is that velocity and
 
 ### 1. Choose your platform
 
-ASCEND provides full reference configurations for four major CI/CD platforms:
+ASCEND provides reference configurations for five CI/CD platforms:
 
 | Platform | Location | Best For |
 |----------|----------|----------|
@@ -62,6 +62,7 @@ ASCEND provides full reference configurations for four major CI/CD platforms:
 | GitLab CI/CD | [`platforms/gitlab-ci/`](./platforms/gitlab-ci/) | Fastest integration via native templates |
 | Jenkins | [`platforms/jenkins/`](./platforms/jenkins/) | Existing Jenkins infrastructure |
 | Azure DevOps | [`platforms/azure-devops/`](./platforms/azure-devops/) | Microsoft enterprise ecosystems |
+| Bamboo | [`platforms/bamboo/`](./platforms/bamboo/) | Atlassian Bamboo — L1/L2 gates with a real severity veto |
 
 ### 2. Copy the pipeline configuration
 
@@ -267,7 +268,7 @@ Contributions are welcome. Please read [`CONTRIBUTING.md`](./CONTRIBUTING.md) fo
 
 Areas where contributions are especially valuable:
 
-- Additional platform configurations (CircleCI, TeamCity, Bamboo, Buildkite)
+- Additional platform configurations (CircleCI, TeamCity, Buildkite)
 - Additional scanning tool integrations
 - Conflict resolution model training data (anonymized merge conflict histories)
 - Language-specific SAST rule sets
