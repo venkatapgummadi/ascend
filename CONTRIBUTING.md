@@ -12,7 +12,7 @@ Thanks for your interest in improving ASCEND. This project is open to contributi
 
 ## Types of contributions we welcome
 
-- **New platform configurations.** CircleCI, TeamCity, Bamboo, Buildkite, AWS CodePipeline, GCP Cloud Build.
+- **New platform configurations.** CircleCI, TeamCity, Buildkite, AWS CodePipeline, GCP Cloud Build. Bamboo L1/L2 is already in `platforms/bamboo/`.
 - **New scanning tool integrations.** Additional SAST / DAST / SCA / IaC tools with community adoption.
 - **Language-specific rule sets.** Semgrep rule packs, SonarQube quality profiles, CodeQL queries.
 - **Sample applications.** Reference integrations showing ASCEND in use.

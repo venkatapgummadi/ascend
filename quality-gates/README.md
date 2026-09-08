@@ -14,6 +14,7 @@ Reference configurations for the scanning tools integrated with ASCEND. Each too
 | OWASP ZAP | DAST | [`zap-rules.tsv`](./zap-rules.tsv) | Dynamic web application scanning |
 | Checkov | IaC | [`checkov-config.yml`](./checkov-config.yml) | Terraform / K8s / CloudFormation policy checks |
 | TruffleHog | Secrets | [`trufflehog-config.yml`](./trufflehog-config.yml) | Verified secret detection |
+| Severity veto | Gate | [`severity-policy.json`](./severity-policy.json) | Aggregates SARIF/JSON reports and fails the job (`scripts/severity_gate.py`) |
 
 ## Quality Gate thresholds
 

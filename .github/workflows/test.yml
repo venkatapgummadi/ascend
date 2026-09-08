@@ -81,6 +81,17 @@ jobs:
           python statistics.py --input aggregate-metrics.csv --output out.json
           diff <(python -m json.tool expected-synthetic-output.json) <(python -m json.tool out.json)
 
+  severity-gate-tests:
+    name: Severity veto — unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run stdlib tests
+        run: python scripts/test_severity_gate.py -v
+
   validate-configs:
     name: Validate platform configurations
     runs-on: ubuntu-latest

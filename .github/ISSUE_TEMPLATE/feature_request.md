@@ -15,7 +15,7 @@ labels: enhancement
 
 ## Affected component
 
-- [ ] Platform configuration (GitHub / GitLab / Jenkins / AzDO)
+- [ ] Platform configuration (GitHub / GitLab / Jenkins / AzDO / Bamboo)
 - [ ] AI Sync module
 - [ ] Quality gate configuration
 - [ ] New scanning tool integration

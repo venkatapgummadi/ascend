@@ -1,0 +1,196 @@
+---
+# ASCEND - Atlassian Bamboo Specs YAML (version 2)
+#
+# Layer 1 (source analysis) + Layer 2 (build / IaC) with a real severity veto.
+# Copy this file into a Bamboo-linked repository (or paste into Bamboo Specs)
+# and point the script tasks at a checkout that also contains:
+#   scripts/severity_gate.py
+#
+# Default tool set is the open-source stack that runs on a Linux Docker agent
+# without paid SAST licenses: Semgrep, Bandit, Gitleaks, Trivy, Checkov.
+# Swap any job for SonarQube / Snyk / TruffleHog if those are already licensed
+# on the Bamboo server. The veto script accepts SARIF from those tools too.
+#
+# Start with ASCEND_MODE=warning-only for 2-4 weeks, then switch to enforce.
+
+version: 2
+
+plan:
+  project-key: ASCEND
+  key: L12
+  name: ASCEND L1 and L2 quality gates
+  description: >-
+    Reference Bamboo plan for ASCEND Layer 1 source analysis and Layer 2
+    container/IaC scanning, with Quality Gate 1 and Quality Gate 2 enforced
+    by scripts/severity_gate.py.
+
+variables:
+  ASCEND_MODE: enforce
+  ASCEND_CRITICAL_THRESHOLD: "0"
+  ASCEND_HIGH_THRESHOLD: "5"
+
+stages:
+  - Layer 1 Source Analysis:
+      jobs:
+        - Semgrep
+        - Bandit
+        - Gitleaks
+  - Quality Gate 1:
+      jobs:
+        - QG1
+  - Layer 2 Build and Integration:
+      jobs:
+        - Trivy
+        - Checkov
+  - Quality Gate 2:
+      jobs:
+        - QG2
+
+Semgrep:
+  docker:
+    image: returntocorp/semgrep:latest
+    volumes:
+      "${bamboo.working.directory}": /src
+  tasks:
+    - checkout
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |
+            semgrep --config=p/ci --config=p/owasp-top-ten --config=p/security-audit \
+              --json -o semgrep-report.json /src
+  artifacts:
+    - name: l1-semgrep
+      location: .
+      pattern: semgrep-report.json
+      shared: true
+      required: true
+
+Bandit:
+  docker:
+    image: python:3.12-slim
+  tasks:
+    - checkout
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |
+            pip install --quiet bandit
+            bandit -r . -f json -o bandit-report.json || true
+  artifacts:
+    - name: l1-bandit
+      location: .
+      pattern: bandit-report.json
+      shared: true
+      required: true
+
+Gitleaks:
+  docker:
+    image: zricethezav/gitleaks:latest
+    volumes:
+      "${bamboo.working.directory}": /src
+  tasks:
+    - checkout
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |
+            gitleaks detect --source /src --report-format json --report-path gitleaks-report.json --no-git || true
+  artifacts:
+    - name: l1-gitleaks
+      location: .
+      pattern: gitleaks-report.json
+      shared: true
+      required: true
+
+QG1:
+  docker:
+    image: python:3.12-slim
+  tasks:
+    - checkout
+    - artifact-download: {}
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |
+            python3 scripts/severity_gate.py --layer 1 \
+              --mode "${bamboo.ASCEND_MODE}" \
+              --critical-max "${bamboo.ASCEND_CRITICAL_THRESHOLD}" \
+              --high-max "${bamboo.ASCEND_HIGH_THRESHOLD}" \
+              --semgrep semgrep-report.json \
+              --bandit bandit-report.json \
+              --gitleaks gitleaks-report.json \
+              --summary-json qg1-summary.json
+  artifacts:
+    - name: qg1-summary
+      location: .
+      pattern: qg1-summary.json
+      shared: true
+      required: false
+
+Trivy:
+  docker:
+    image: aquasec/trivy:latest
+    volumes:
+      "${bamboo.working.directory}": /src
+      /var/run/docker.sock: /var/run/docker.sock
+  tasks:
+    - checkout
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |
+            docker build -t ascend-app:${bamboo.buildNumber} /src
+            trivy image --severity CRITICAL,HIGH --ignore-unfixed \
+              --exit-code 0 --format sarif --output trivy.sarif \
+              ascend-app:${bamboo.buildNumber}
+  artifacts:
+    - name: l2-trivy
+      location: .
+      pattern: trivy.sarif
+      shared: true
+      required: true
+
+Checkov:
+  docker:
+    image: bridgecrew/checkov:latest
+    volumes:
+      "${bamboo.working.directory}": /src
+  tasks:
+    - checkout
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |
+            checkov -d /src --framework terraform,cloudformation,kubernetes,dockerfile \
+              -o sarif --output-file-path /src --soft-fail
+            if [ -f /src/results_sarif.sarif ]; then mv /src/results_sarif.sarif /src/checkov.sarif; fi
+            if [ -f /src/checkov.sarif ]; then cp /src/checkov.sarif checkov.sarif; fi
+  artifacts:
+    - name: l2-checkov
+      location: .
+      pattern: checkov.sarif
+      shared: true
+      required: true
+
+QG2:
+  docker:
+    image: python:3.12-slim
+  tasks:
+    - checkout
+    - artifact-download: {}
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |
+            python3 scripts/severity_gate.py --layer 2 \
+              --mode "${bamboo.ASCEND_MODE}" \
+              --critical-max "${bamboo.ASCEND_CRITICAL_THRESHOLD}" \
+              --sarif trivy.sarif checkov.sarif \
+              --summary-json qg2-summary.json
+  artifacts:
+    - name: qg2-summary
+      location: .
+      pattern: qg2-summary.json
+      shared: true
+      required: false

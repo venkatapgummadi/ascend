@@ -70,6 +70,8 @@ Definitions of terms used in ASCEND documentation.
 
 **Jenkinsfile.** The declarative pipeline definition file for Jenkins. ASCEND provides a reference Jenkinsfile.
 
+**Bamboo Specs.** Atlassian's YAML (or Java) plan-as-code format. ASCEND's Bamboo pack is Specs YAML v2 covering Layer 1 and Layer 2.
+
 ## K
 
 **KICS (Keeping Infrastructure as Code Secure).** Open-source IaC scanner from Checkmarx. Alternative to Checkov.

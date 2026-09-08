@@ -1,0 +1,14 @@
+{
+  "description": "Default ASCEND severity veto. Layer 1 allows a small HIGH budget so noisy SAST can be calibrated; Layer 2 (container + IaC) fails on any HIGH or CRITICAL. Override with --critical-max / --high-max or ASCEND_* environment variables.",
+  "mode": "enforce",
+  "layers": {
+    "1": {
+      "critical_max": 0,
+      "high_max": 5
+    },
+    "2": {
+      "critical_max": 0,
+      "high_max": 0
+    }
+  }
+}

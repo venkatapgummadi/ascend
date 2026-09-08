@@ -129,6 +129,7 @@ See the [platforms/](../platforms/) directory for complete, runnable pipeline de
 - [GitLab CI/CD](../platforms/gitlab-ci/)
 - [Jenkins](../platforms/jenkins/)
 - [Azure DevOps](../platforms/azure-devops/)
+- [Bamboo](../platforms/bamboo/) (Layer 1 + Layer 2)
 
 ## Further reading
 

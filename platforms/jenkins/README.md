@@ -5,6 +5,7 @@ Declarative Jenkinsfile reference configuration for the ASCEND framework.
 ## Files
 
 - [`Jenkinsfile`](./Jenkinsfile) — Complete four-layer pipeline.
+- [`../../scripts/severity_gate.py`](../../scripts/severity_gate.py) — Layer 2 veto (Quality Gate 2 used to echo PASS; it now fails the build when Trivy/Checkov SARIF exceeds policy).
 
 ## Prerequisites
 
@@ -53,6 +54,8 @@ Available on agent nodes:
 
 ```bash
 cp Jenkinsfile /path/to/your/repo/Jenkinsfile
+mkdir -p /path/to/your/repo/scripts
+cp ../../scripts/severity_gate.py /path/to/your/repo/scripts/severity_gate.py
 ```
 
 ### 2. Create the pipeline job

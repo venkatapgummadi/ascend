@@ -41,8 +41,9 @@ Yes. The MIT license permits commercial use without restriction. You don't need 
 | GitLab CI/CD | Prioritizing fastest adoption via native security templates |
 | Jenkins | Existing Jenkins infrastructure requiring gradual migration |
 | Azure DevOps | Microsoft ecosystem, enterprise RBAC requirements |
+| Bamboo | Existing Atlassian Bamboo agents; start with the L1/L2 Specs YAML |
 
-All four support the full ASCEND feature set. Your existing investment and team familiarity usually dominate the choice.
+GitHub Actions, GitLab, Jenkins, and Azure DevOps ship a four-layer sketch. Bamboo currently ships the two layers that block the build (source analysis + container/IaC) with an enforceable severity veto. Your existing investment and team familiarity usually dominate the choice.
 
 ### Will ASCEND slow down my builds?
 

@@ -6,6 +6,7 @@ This document outlines the planned direction for ASCEND. Timelines are aspiratio
 
 ### Additional platform coverage
 
+- **Bamboo Layer 3 / Layer 4** sketch (DAST + AI-sync webhook) on top of the L1/L2 plan in `platforms/bamboo/`.
 - **CircleCI**: YAML config parallel to GitHub Actions.
 - **TeamCity**: Kotlin DSL build configuration.
 - **Buildkite**: `.buildkite/pipeline.yml` with parallel steps.

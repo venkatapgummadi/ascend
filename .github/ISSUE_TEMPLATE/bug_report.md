@@ -14,6 +14,7 @@ labels: bug
 - [ ] GitHub Actions workflow
 - [ ] GitLab CI/CD pipeline
 - [ ] Jenkinsfile
+- [ ] Bamboo Specs YAML
 - [ ] Azure DevOps pipeline
 - [ ] AI Sync module
 - [ ] Quality gate configuration
@@ -32,7 +33,7 @@ labels: bug
 ## Environment
 
 - ASCEND version:
-- Platform (GitHub Actions / GitLab / Jenkins / Azure DevOps):
+- Platform (GitHub Actions / GitLab / Jenkins / Azure DevOps / Bamboo):
 - OS:
 - Python version (if AI sync):
 

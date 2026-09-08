@@ -83,6 +83,8 @@ Then transition to *enforce* mode:
 ASCEND_MODE: enforce
 ```
 
+Platforms that cannot rely on a native scanner `exit-code` (Bamboo script tasks, Jenkins after `archiveArtifacts`) should call [`scripts/severity_gate.py`](../scripts/severity_gate.py). It reads SARIF, Semgrep JSON, Bandit JSON, and Gitleaks JSON and fails the job when counts exceed `ASCEND_CRITICAL_THRESHOLD` / `ASCEND_HIGH_THRESHOLD`. Use `--mode warning-only` during calibration. Default budgets are in [`quality-gates/severity-policy.json`](../quality-gates/severity-policy.json).
+
 The progressive rollout pattern aligns with NIST DevSecOps guideline recommendations to avoid disrupting development workflow during initial adoption.
 
 ## Composite quality score

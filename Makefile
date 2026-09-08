@@ -31,6 +31,7 @@ install:
 
 test:
 	cd ai-sync && pytest -q
+	$(PY) scripts/test_severity_gate.py
 
 lint:
 	cd ai-sync && ruff check ascend_sync tests
