@@ -25,7 +25,7 @@ plan:
     by scripts/severity_gate.py.
 
 variables:
-  ASCEND_MODE: enforce
+  ASCEND_MODE: warning-only
   ASCEND_CRITICAL_THRESHOLD: "0"
   ASCEND_HIGH_THRESHOLD: "5"
 
@@ -48,7 +48,7 @@ stages:
 
 Semgrep:
   docker:
-    image: returntocorp/semgrep:latest
+    image: semgrep/semgrep:1.86.0
     volumes:
       "${bamboo.working.directory}": /src
   tasks:
@@ -58,7 +58,7 @@ Semgrep:
         scripts:
           - |
             semgrep --config=p/ci --config=p/owasp-top-ten --config=p/security-audit \
-              --json -o semgrep-report.json /src
+              --json -o /src/semgrep-report.json /src
   artifacts:
     - name: l1-semgrep
       location: .
@@ -68,7 +68,7 @@ Semgrep:
 
 Bandit:
   docker:
-    image: python:3.12-slim
+    image: python:3.12.7-slim
   tasks:
     - checkout
     - script:
@@ -86,7 +86,7 @@ Bandit:
 
 Gitleaks:
   docker:
-    image: zricethezav/gitleaks:latest
+    image: zricethezav/gitleaks:v8.21.2
     volumes:
       "${bamboo.working.directory}": /src
   tasks:
@@ -95,7 +95,7 @@ Gitleaks:
         interpreter: SHELL
         scripts:
           - |
-            gitleaks detect --source /src --report-format json --report-path gitleaks-report.json --no-git || true
+            gitleaks detect --source /src --report-format json --report-path /src/gitleaks-report.json --no-git || true
   artifacts:
     - name: l1-gitleaks
       location: .
@@ -105,7 +105,7 @@ Gitleaks:
 
 QG1:
   docker:
-    image: python:3.12-slim
+    image: python:3.12.7-slim
   tasks:
     - checkout
     - artifact-download: {}
@@ -117,6 +117,7 @@ QG1:
               --mode "${bamboo.ASCEND_MODE}" \
               --critical-max "${bamboo.ASCEND_CRITICAL_THRESHOLD}" \
               --high-max "${bamboo.ASCEND_HIGH_THRESHOLD}" \
+              --missing fail \
               --semgrep semgrep-report.json \
               --bandit bandit-report.json \
               --gitleaks gitleaks-report.json \
@@ -130,20 +131,17 @@ QG1:
 
 Trivy:
   docker:
-    image: aquasec/trivy:latest
+    image: aquasec/trivy:0.56.2
     volumes:
       "${bamboo.working.directory}": /src
-      /var/run/docker.sock: /var/run/docker.sock
   tasks:
     - checkout
     - script:
         interpreter: SHELL
         scripts:
           - |
-            docker build -t ascend-app:${bamboo.buildNumber} /src
-            trivy image --severity CRITICAL,HIGH --ignore-unfixed \
-              --exit-code 0 --format sarif --output trivy.sarif \
-              ascend-app:${bamboo.buildNumber}
+            trivy fs --severity CRITICAL,HIGH --ignore-unfixed \
+              --exit-code 0 --format sarif --output /src/trivy.sarif /src
   artifacts:
     - name: l2-trivy
       location: .
@@ -153,7 +151,7 @@ Trivy:
 
 Checkov:
   docker:
-    image: bridgecrew/checkov:latest
+    image: bridgecrew/checkov:3.2.0
     volumes:
       "${bamboo.working.directory}": /src
   tasks:
@@ -175,7 +173,7 @@ Checkov:
 
 QG2:
   docker:
-    image: python:3.12-slim
+    image: python:3.12.7-slim
   tasks:
     - checkout
     - artifact-download: {}
@@ -186,6 +184,7 @@ QG2:
             python3 scripts/severity_gate.py --layer 2 \
               --mode "${bamboo.ASCEND_MODE}" \
               --critical-max "${bamboo.ASCEND_CRITICAL_THRESHOLD}" \
+              --missing fail \
               --sarif trivy.sarif checkov.sarif \
               --summary-json qg2-summary.json
   artifacts:

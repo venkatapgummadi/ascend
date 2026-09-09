@@ -1,14 +1,6 @@
 #!/usr/bin/env bash
-# ASCEND Bamboo agent - Layer 2 Trivy
+# ASCEND Bamboo agent - Layer 2 Trivy (filesystem scan; do not docker build here)
 set -euo pipefail
-IMAGE="${ASCEND_IMAGE:-ascend-app:local}"
-if [[ ! -f Dockerfile ]]; then
-  echo "No Dockerfile in $(pwd); scanning the filesystem instead."
-  trivy fs --severity CRITICAL,HIGH --ignore-unfixed \
-    --exit-code 0 --format sarif --output trivy.sarif .
-else
-  docker build -t "$IMAGE" .
-  trivy image --severity CRITICAL,HIGH --ignore-unfixed \
-    --exit-code 0 --format sarif --output trivy.sarif "$IMAGE"
-fi
+trivy fs --severity CRITICAL,HIGH --ignore-unfixed \
+  --exit-code 0 --format sarif --output trivy.sarif .
 echo "Wrote trivy.sarif"

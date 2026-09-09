@@ -25,7 +25,7 @@ The other platform packs ship a four-layer sketch. Several of those Layer-2 "qua
 - Critical findings = 0
 - High findings = 0
 
-Set `ASCEND_MODE=warning-only` on the plan variables to collect findings for 2-4 weeks without failing the build, then switch to `enforce`.
+The plan ships `ASCEND_MODE=warning-only` so a first copy-paste does not fail closed. Collect findings for 2-4 weeks, then set `enforce`.
 
 ## Prerequisites
 
@@ -59,7 +59,7 @@ Project key `ASCEND` and plan key `L12` are placeholders. Change them to keys th
 
 ### 3. Calibrate, then enforce
 
-1. Set plan variable `ASCEND_MODE` = `warning-only`.
+1. Leave plan variable `ASCEND_MODE` = `warning-only` (the default in `bamboo.yaml`).
 2. Run against a representative branch for two to four weeks.
 3. Suppress noisy rules in `quality-gates/semgrep-rules.yml` / Checkov skip lists.
 4. Set `ASCEND_MODE` = `enforce`.

@@ -214,7 +214,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument(
         "--missing",
         choices=("skip", "fail"),
-        default="skip",
+        default="fail",
         help="what to do when a report path does not exist",
     )
     p.add_argument("--summary-json", type=Path)
@@ -228,10 +228,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     high_max = args.high_max if args.high_max is not None else high_default
 
     findings: List[Finding] = []
-    findings.extend(collect("sarif", args.sarif, args.missing))
-    findings.extend(collect("semgrep", args.semgrep, args.missing))
-    findings.extend(collect("bandit", args.bandit, args.missing))
-    findings.extend(collect("gitleaks", args.gitleaks, args.missing))
+    try:
+        findings.extend(collect("sarif", args.sarif, args.missing))
+        findings.extend(collect("semgrep", args.semgrep, args.missing))
+        findings.extend(collect("bandit", args.bandit, args.missing))
+        findings.extend(collect("gitleaks", args.gitleaks, args.missing))
+    except FileNotFoundError as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 1
 
     if not (
         args.sarif or args.semgrep or args.bandit or args.gitleaks

@@ -175,6 +175,16 @@ class EvaluateAndCliTests(unittest.TestCase):
         rc = gate.main(["--layer", "2", "--sarif", str(path)])
         self.assertEqual(rc, 1)
 
+    def test_missing_report_fails_closed(self):
+        rc = gate.main(["--layer", "1", "--semgrep", "no-such-semgrep.json"])
+        self.assertEqual(rc, 1)
+
+    def test_missing_report_can_skip(self):
+        rc = gate.main(
+            ["--layer", "1", "--missing", "skip", "--semgrep", "no-such-semgrep.json"]
+        )
+        self.assertEqual(rc, 0)
+
 
 if __name__ == "__main__":
     unittest.main()
