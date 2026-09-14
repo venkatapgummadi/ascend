@@ -1,6 +1,6 @@
 # ASCEND
 
-**A**utomated **S**canning, **C**ompliance **EN**forcement, and **D**eployment
+**A**utomated **S**canning, **C**ompliance **En**forcement, and **D**eployment
 
 A four-layer DevSecOps framework that integrates automated security scanning directly into CI/CD pipelines with build-gating mechanisms, multi-track deployment orchestration, and AI-powered post-deployment code synchronization.
 
