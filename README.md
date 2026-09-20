@@ -130,10 +130,7 @@ What the harness measures and how to read it:
 - **Overhead** is wall-clock time per scanning layer (median and P95); only
   installed tools are timed.
 
-We deliberately do **not** claim a multi-organization field study. Earlier drafts
-reported pre/post metrics from private repositories; those claims are withdrawn
-because they cannot be independently reproduced, and the project now reports only
-public-benchmark results.
+Results are reported on public benchmarks with released scripts.
 
 ---
 
