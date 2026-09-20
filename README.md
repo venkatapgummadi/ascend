@@ -123,10 +123,12 @@ What the harness measures and how to read it:
 - **Detection coverage** is computed against the OWASP Benchmark's labeled
   ground truth, so single-tool vs. multi-tool true-positive rates and the
   marginal value of each added tool are directly verifiable.
-- **Conflict resolution** is reported as an **auto-resolve rate** and a
-  **conditional accept-rate** — the latter applies only to the subset the system
-  chooses to auto-resolve, and is *not* a general accuracy figure. Accept-rate
-  comes with a 95% bootstrap confidence interval and a per-type breakdown.
+- **Conflict handling**: the accepted paper reports the deterministic
+  conflict-type classifier that gates the resolver (5 of 7 on the released
+  fixtures). `run_sync.py` also computes an **auto-resolve rate** and a
+  **conditional accept-rate** with a 95% bootstrap confidence interval; these
+  end-to-end figures will be reported when a public resolution-labeled conflict
+  corpus is released.
 - **Overhead** is wall-clock time per scanning layer (median and P95); only
   installed tools are timed.
 
